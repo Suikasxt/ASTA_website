@@ -1,0 +1,14 @@
+.login-form {
+	min-width: 400px;
+	max-width: 600px;
+}
+.ant-alert-error{
+	width: 300px;
+	margin: 20px;
+}
+.login-form-forgot {
+	float: right;
+}
+.login-form-button {
+	width: 100%;
+}

@@ -1,0 +1,39 @@
+.logo {
+	height: 60px;
+	width: 100%;
+	display: flex;
+	flex-direction: row;
+	align-items: left;
+	justify-content: space-around;
+	margin-bottom: 10%;
+}
+
+.logo_img {
+	height: 100%;
+	width: auto;
+	margin-left: 10px;
+	margin-right: 0;
+}
+
+#root{
+	padding: 50px 8% 50px 8%;
+	background: #fff;
+	min-Height: 360px;
+	align-items: center;
+	font-size: 18px;
+}
+
+header > div{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+}
+
+header > div > div{
+	textAlign: center;
+	line-height: normal;
+	display: flex;
+	align-items: center;
+}
+

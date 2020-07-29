@@ -1,0 +1,33 @@
+#team-name{
+	font-weight: bolder;
+	font-size: 50px;
+	text-align: center;
+}
+#team-info{
+	font-size: 18px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 20px 15% 20px 15%;
+}
+.info-item{
+	display: flex;
+	padding: 10px;
+	flex-direction: row;
+}
+.info-item-tip{
+	min-width: 150px;
+}
+.info-item-content{
+	font-weight: bold;
+	min-width: 300px;
+}
+.team-info-opa{
+	display: flex;
+	flex-direction: column;
+	margin-top: 30px;
+	align-items: center;
+}
+.team-info-opa .ant-btn{
+	width: 200px;
+}
