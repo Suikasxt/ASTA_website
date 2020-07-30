@@ -8,6 +8,7 @@ import $ from 'jquery';
 import { Layout, Menu, Typography, Icon, Button } from 'antd';
 import Home from './home.js';
 import Login from './user/login.js';
+import Register from './user/register.js';
 import Information from './user/information.js';
 import TeamList from './team/list.js';
 import TeamDetail from './team/detail.js';
@@ -41,16 +42,16 @@ class App extends React.Component {
 		let a = document.createElement('a');
 		a.href = url;
 		a.click();
-    };
+	};
 	updateUser = () => {
-		if (this.state.userLoading) return
-		let url = global.constants.server + 'api/user/';
+		if (this.state.userLoading) return;
+		let url = global.constants.server + 'user/';
 		this.loginRequest = $.get({
 			url: url,
 			crossDomain: true,
 			xhrFields: {
-                withCredentials: true
-            },
+				withCredentials: true
+			},
 			async: true,
 			success: function (result) {
 				if (result.id && result !== this.state.user){
@@ -67,13 +68,13 @@ class App extends React.Component {
 	}
 	
 	logout = (e) => {
-		let url = global.constants.server + 'api/user/logout/';
+		let url = global.constants.server + 'logout/';
 		this.logoutRequest = $.get({
 			url: url,
 			crossDomain: true,
 			xhrFields: {
-                withCredentials: true
-            },
+				withCredentials: true
+			},
 			success: function (result) {
 				this.setState({user : null});
 			}.bind(this)
@@ -201,12 +202,8 @@ class App extends React.Component {
 									{...props}
 								/>}
 							/>
-							<Route path="/login/:token" exact render={props =>
-								<Login
-									unLogin={this.state.user == null}
-									updateUser={this.updateUser.bind(this)}
-									{...props}
-								/>}
+							<Route path="/register" exact render={props =>
+								<Register {...props}/>}
 							/>
 							<Route path="/team/list" exact render={props =>
 								<TeamList

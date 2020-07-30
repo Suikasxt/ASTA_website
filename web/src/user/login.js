@@ -2,10 +2,32 @@ import '../config';
 import $ from 'jquery';
 import { withRouter, Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import './login.css';
+import './../main.css';
 import { message, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
 
 
+const formItemLayout = {
+	labelCol: {
+		xs: { span: 4 },
+		sm: { span: 4 },
+	},
+	wrapperCol: {
+		xs: { span: 20 },
+		sm: { span: 20 },
+	},
+};
+const tailFormItemLayout = {
+	wrapperCol: {
+		xs: {
+			span: 20,
+			offset: 2,
+		},
+		sm: {
+			span: 20,
+			offset: 2,
+		},
+	},
+};
 class Login extends Component{
 	state = {
 	}
@@ -18,30 +40,12 @@ class Login extends Component{
 		if (this.props.unLogin === false){
 			this.props.history.push('/');
 		}
-		if (this.props.match.params.token != null){
-			let url = global.constants.server + 'api/user/login/';
-			this.serverRequest = $.post({
-				url: url,
-				data: {token: this.props.match.params.token},
-				crossDomain: true,
-				xhrFields: {
-					withCredentials: true
-				},
-				success: function (result) {
-					if (result.result){
-						this.props.updateUser(result)
-					}else{
-						message.error(result.message)
-					}
-				}.bind(this)
-			});
-		}
 	}
 	handleSubmit = (e) => {
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				let url = global.constants.server + 'api/user/login/';
+				let url = global.constants.server + 'login/';
 				this.serverRequest = $.post({
 					url: url,
 					data: values,
@@ -50,12 +54,12 @@ class Login extends Component{
 						withCredentials: true
 					},
 					success: function (result) {
-						if (result.result){
-							this.props.updateUser(result)
-						}else{
-							message.error(result.message)
-						}
-					}.bind(this)
+						message.success(result)
+						this.props.updateUser()
+					}.bind(this),
+					error: function (result) {
+						message.error(result.responseText)
+					}.bind(this),
 				});
 			}
 		});
@@ -64,10 +68,11 @@ class Login extends Component{
 	render(){
 		const { getFieldDecorator } = this.props.form;
 		return (
-			<div  id = "root" style={{ minHeight: 500, alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
-				<Card>
-					<Form onSubmit={this.handleSubmit} className="login-form">
-						<Form.Item>
+			<div  id = "root" style={{ minHeight: 700, alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
+				<span className="form-title">Log In</span>
+				<Card style = {{width: '70%'}}>
+					<Form {...formItemLayout} onSubmit={this.handleSubmit} className="form">
+						<Form.Item label='用户名'>
 							{getFieldDecorator('username', {
 								rules: [{ required: true, message: 'Please input your username!' }],
 							})(
@@ -77,7 +82,7 @@ class Login extends Component{
 								/>,
 							)}
 						</Form.Item>
-						<Form.Item>
+						<Form.Item label='密码'>
 							{getFieldDecorator('password', {
 								rules: [{ required: true, message: 'Please input your Password!' }],
 							})(
@@ -88,13 +93,13 @@ class Login extends Component{
 								/>,
 							)}
 						</Form.Item>
-						<Form.Item>
+						<Form.Item {...tailFormItemLayout} style = {{ textAlign : 'center'}}>
 							{getFieldDecorator('remember', {
 								valuePropName: 'checked',
 								initialValue: true,
 							})(<Checkbox>Remember me</Checkbox>)}
-							<Button type="primary" htmlType="submit" className="login-form-button">
-								Log in
+							<Button type="primary" htmlType="submit" className="form-button">
+								Log In
 							</Button>
 						</Form.Item>
 						<div style = {{ textAlign : 'center'}}>
