@@ -10,6 +10,10 @@ import Home from './home.js';
 import Login from './user/login.js';
 import Register from './user/register.js';
 import Information from './user/information.js';
+import ContestList from './contest/list.js';
+import ContestDetail from './contest/detail.js';
+import BlogList from './blog/list.js';
+import BlogDetail from './blog/detail.js';
 import TeamList from './team/list.js';
 import TeamDetail from './team/detail.js';
 import TeamManage from './team/manage.js';
@@ -112,55 +116,9 @@ class App extends React.Component {
 			)
 		}
 	}
-	
-	getTeamMenu = () => {
-		if (this.state.user != null){
-			return (
-				<SubMenu
-					key="team"
-					title={
-						<span>
-							<Icon type="team" />
-							<span>Team</span>
-						</span>
-					}
-				>
-					<Menu.Item key="teamList" >
-						<Link to="/team/list">
-							<span>Team List</span>
-						</Link>
-					</Menu.Item>
-					
-					{this.state.user.isMember && this.state.user.team != null ? (
-						<Menu.Item key="myTeam">
-							<Link to={"/team/detail/" + this.state.user.team.id}>
-								<span>{this.state.user.team.name}</span>
-							</Link>
-						</Menu.Item>
-					) : (
-						<Menu.Item key="createTeam" >
-							<Link to="/team/manage">
-								<span>Create Team</span>
-							</Link>
-						</Menu.Item>
-					)}
-				</SubMenu>
-			)
-		}else{
-			return (
-				<Menu.Item key="teamList">
-					<Link to="/team/list">
-						<Icon type="user" />
-						<span>Team List</span>
-					</Link>
-				</Menu.Item>
-			)
-		}
-	}
 
 	render() {
 		let user = this.getUserMenu()
-		let team = this.getTeamMenu()
 		
 		return (
 			<Router>
@@ -177,7 +135,18 @@ class App extends React.Component {
 								</Link>
 							</Menu.Item>
 							{user}
-							{team}
+							<Menu.Item key="Contest">
+								<Link to="/contest">
+									<Icon type="trophy" />
+									<span>Contest</span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="Blog">
+								<Link to="/blog">
+									<Icon type="read" />
+									<span>Blog</span>
+								</Link>
+							</Menu.Item>
 						</Menu>
 					</Sider>
 					<Layout>
@@ -205,28 +174,32 @@ class App extends React.Component {
 							<Route path="/register" exact render={props =>
 								<Register {...props}/>}
 							/>
-							<Route path="/team/list" exact render={props =>
-								<TeamList
+							<Route path="/contest" exact render={props =>
+								<ContestList
 									user={this.state.user}
 									{...props}
 								/>}
 							/>
-							<Route path="/team/detail/:teamID" exact render={props =>
-								<TeamDetail
+							<Route path="/contest/:id" exact render={props =>
+								<ContestDetail
 									user={this.state.user}
-									updateUser={this.updateUser.bind(this)}
 									{...props}
 								/>}
 							/>
-							<Route path="/team/manage" exact render={props =>
-								<TeamManage
+							<Route path="/blog" exact render={props =>
+								<BlogList
 									user={this.state.user}
-									updateUser={this.updateUser.bind(this)}
+									{...props}
+								/>}
+							/>
+							<Route path="/blog/:id" exact render={props =>
+								<BlogDetail
+									user={this.state.user}
 									{...props}
 								/>}
 							/>
 						</Content>
-						<Footer style={{ textAlign: 'center' }}>&copy; FC17, DAASTA, 2020</Footer>
+						<Footer style={{ textAlign: 'center' }}>&copy; ASTA, 2020</Footer>
 					</Layout>
 				</Layout>
 			</Router>

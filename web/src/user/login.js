@@ -2,7 +2,6 @@ import '../config';
 import $ from 'jquery';
 import { withRouter, Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import './../main.css';
 import { message, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
 
 
@@ -68,8 +67,8 @@ class Login extends Component{
 	render(){
 		const { getFieldDecorator } = this.props.form;
 		return (
-			<div  id = "root" style={{ minHeight: 700, alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
-				<span className="form-title">Log In</span>
+			<div  id = "root" style={{ alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
+				<div className="title">Log In</div>
 				<Card style = {{width: '70%'}}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit} className="form">
 						<Form.Item label='用户名'>

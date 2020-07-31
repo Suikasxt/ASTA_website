@@ -14,11 +14,27 @@
 	margin-left: 10px;
 	margin-right: 0;
 }
+.title{
+	text-align: center;
+	font-size: 40px;
+	font-weight: bolder;
+	color: gray;
+}
+.ant-alert-error{
+	width: 300px;
+	margin: 20px;
+}
+.form-forgot {
+	float: right;
+}
+.form-button {
+	width: 400px;
+}
 
 #root{
 	padding: 50px 8% 50px 8%;
 	background: #fff;
-	min-Height: 360px;
+	min-Height: 700px;
 	align-items: center;
 	font-size: 18px;
 }

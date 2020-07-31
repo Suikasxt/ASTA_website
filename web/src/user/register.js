@@ -2,7 +2,6 @@ import '../config';
 import $ from 'jquery';
 import { withRouter, Link } from 'react-router-dom';
 import React, { Component } from 'react';
-import './../main.css';
 import { message, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
 const formItemLayout = {
 	labelCol: {
@@ -70,8 +69,8 @@ class Register extends Component{
 	render(){
 		const { getFieldDecorator } = this.props.form;
 		return (
-			<div	id = "root" style={{ minHeight: 700, alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
-				<span className="form-title">Register</span>
+			<div	id = "root" style={{ alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
+				<span className="title">Register</span>
 				<Card style = {{width: '70%'}}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit} className="form">
 						<Form.Item label="邮箱">

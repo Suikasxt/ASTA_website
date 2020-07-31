@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from api import user
+from api import user, contest, blog
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -23,4 +23,8 @@ urlpatterns = [
     path('login/', user.login),
     path('logout/', user.logout),
     path('user/', user.getInfo),
+    path('contest/list/', contest.list),
+    path('contest/', contest.detail),
+    path('blog/list/', blog.list),
+    path('blog/', blog.detail),
 ]
