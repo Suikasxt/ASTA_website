@@ -20,15 +20,6 @@ def detail(request):
 	if (len(list) == 0):
 		return HttpResponse("Contest not found.", status = 400)
 	item = list[0]
-	result = { 'name': item.name, 'detail': item.detail, 'team': [], 'blog': [] }
-	teams = item.team_set.all()
+	result = { 'name': item.name, 'detail': item.detail }
 	
-	for team in teams:
-		result['team'].append({'name': team.name, 'introduction': team.introduction})
-	
-	tag = Tag.objects.filter(name = item.name)
-	if (len(tag) > 0):
-		blogs = tag[0].blog_set.all()
-		for blog in blogs:
-			result['blog'].append({'id': blog.id, 'title': blog.title, 'author': blog.author.username, 'time': blog.timestamp.strftime('%Y-%m-%d')})
 	return HttpResponse(json.dumps(result), content_type = 'application/json')

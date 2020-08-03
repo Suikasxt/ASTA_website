@@ -29,7 +29,7 @@ class ListElement extends Component{
 			)
 		}
 		return (
-			<div	id = "root"	style = {{padding: 60}}>
+			<div id = "root" style = {{padding: 60}}>
 				<h1 style={{lineHeight: 5, fontSize: 20,fontWeight: 700}}>Contests</h1>
 				<Collapse accordion>
 					{

@@ -66,7 +66,7 @@ def login(request):
 def getInfo(request):
 	if (request.GET == None or request.GET.get('username') == None):
 		if (request.user):
-			return HttpResponse(tools.userToJson(request.user), content_type = 'application/json', status = 200)
+			return HttpResponse(tools.userToJson(request.user, True), content_type = 'application/json', status = 200)
 		else:
 			return HttpResponse("Data missing.", status = 400)
 	

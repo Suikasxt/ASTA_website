@@ -19,13 +19,17 @@ class Team(models.Model):
 	introduction = models.CharField(max_length = 1024, default = '')
 	captain = models.ForeignKey(to = User, on_delete = models.SET_NULL, null = True)
 	contest = models.ForeignKey(to = Contest, on_delete = models.SET_NULL, null = True)
+	members = models.ManyToManyField(to = User, blank = True, through = 'Membership', related_name = 'belong')
+	candidates = models.ManyToManyField(to = User, blank = True, through = 'Application', related_name = 'apply')
 
-
-#描述用户和队伍之间的归属关系
-class UserToTeam(models.Model):
-	user = models.ForeignKey(to = User, on_delete = models.SET_NULL, null = True)
-	team = models.ForeignKey(to = Team, on_delete = models.SET_NULL, null = True)
-	successful = models.BooleanField(default = False)#为否表示仍处于申请状态
+#描述用户和队伍之间的归属关系、申请情况
+class Membership(models.Model):
+	user = models.ForeignKey(to = User, on_delete = models.CASCADE, null = True)
+	team = models.ForeignKey(to = Team, on_delete = models.CASCADE, null = True)
+class Application(models.Model):
+	user = models.ForeignKey(to = User, on_delete = models.CASCADE, null = True)
+	team = models.ForeignKey(to = Team, on_delete = models.CASCADE, null = True)
+	
 	
 class Tag(models.Model):
 	name = models.CharField(max_length = 100, primary_key=True)

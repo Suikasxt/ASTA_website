@@ -11,15 +11,23 @@ class ListElement extends Component{
 	}
 	getList = () => {
 		let url = global.constants.server + 'blog/list/';
+		let data = {}
+		if (this.props.tag){
+			data['tag'] = this.props.tag
+		}
 		this.teamListRequest = $.get({
 			url: url,
+			data: data,
 			success: function (result) {
 				this.setState({list : result});
 			}.bind(this)
 		})
 	}
 	componentWillMount(){
-		this.getList();
+		this.getList()
+	}
+	componentWillReceiveProps(nextProps){
+		this.getList()
 	}
 	render(){
 		if (this.state.list == null){
@@ -28,13 +36,12 @@ class ListElement extends Component{
 			)
 		}
 		return (
-			<div	id = "root"	style = {{padding: 60}}>
-				<h1 style={{lineHeight: 5, fontSize: 20,fontWeight: 700}}>Blog</h1>
+			<div id = "root" style = {{padding: this.props.padding ? this.props.padding : 60}}>
 				<List
 					itemLayout="horizontal"
 					dataSource={this.state.list}
 					renderItem={item => (
-						<List.Item>
+						<List.Item key={item.id}>
 							<List.Item.Meta
 								title={<Link to={"blog/"+item.id}>{item.title}</Link>}
 								description={item.author + '  ' + item.time}

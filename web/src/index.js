@@ -15,8 +15,7 @@ import ContestDetail from './contest/detail.js';
 import BlogList from './blog/list.js';
 import BlogDetail from './blog/detail.js';
 import TeamList from './team/list.js';
-import TeamDetail from './team/detail.js';
-import TeamManage from './team/manage.js';
+import TeamAdmin from './team/admin.js';
 import ASTA_logo from './assets/ASTA_logo.jpg'
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -194,6 +193,12 @@ class App extends React.Component {
 							/>
 							<Route path="/blog/:id" exact render={props =>
 								<BlogDetail
+									user={this.state.user}
+									{...props}
+								/>}
+							/>
+							<Route path="/team" exact render={props =>
+								<TeamList
 									user={this.state.user}
 									{...props}
 								/>}
