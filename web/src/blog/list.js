@@ -26,9 +26,6 @@ class ListElement extends Component{
 	componentWillMount(){
 		this.getList()
 	}
-	componentWillReceiveProps(nextProps){
-		this.getList()
-	}
 	render(){
 		if (this.state.list == null){
 			return (

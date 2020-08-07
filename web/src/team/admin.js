@@ -105,6 +105,8 @@ class Admin extends Component{
 	componentWillMount(){
 		if (this.props.contestId && this.props.user){
 			this.getTeamInfo(this.props.user.username, this.props.contestId)
+		}else{
+			this.state.team = null
 		}
 	}
 	createHandleCancel = ()=>{

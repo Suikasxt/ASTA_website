@@ -46,7 +46,13 @@ class App extends React.Component {
 		a.href = url;
 		a.click();
 	};
-	updateUser = () => {
+	updateUser = (data = null) => {
+		if (data != null){
+			if (data.avatar != null){
+				this.state.user.avatar = data.avatar
+			}
+			return
+		}
 		if (this.state.userLoading) return;
 		let url = global.constants.server + 'user/';
 		this.loginRequest = $.get({
@@ -57,7 +63,7 @@ class App extends React.Component {
 			},
 			async: true,
 			success: function (result) {
-				if (result.id && result !== this.state.user){
+				if (result.id !== undefined && result !== this.state.user){
 					this.setState({user: result});
 				}
 			}.bind(this),
@@ -160,6 +166,7 @@ class App extends React.Component {
 							<Route path="/information" render={props => 
 								<Information
 									user={this.state.user}
+									updateUser={this.updateUser.bind(this)}
 									{...props} 
 								/>}
 							/>

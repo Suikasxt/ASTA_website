@@ -5,12 +5,12 @@ def userToDict(user, detail = False):
 	result = {}
 	if detail:
 		result['id'] = user.id
-		result['username'] = user.username
 		result['email'] = user.email
 		result['name'] = user.name
 		result['className'] = user.className
-	else:
-		result['username'] = user.username
+		
+	result['avatar'] = 'media/' + str(user.avatar)
+	result['username'] = user.username
 	return result
 	
 def userToJson(user, detail = False):

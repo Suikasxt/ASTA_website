@@ -60,12 +60,10 @@ def login(request):
 	else:
 		return HttpResponse("Invalid username or password.", status = 400)
 		
-
-
-
+			
 def getInfo(request):
 	if (request.GET == None or request.GET.get('username') == None):
-		if (request.user):
+		if (request.user.is_authenticated):
 			return HttpResponse(tools.userToJson(request.user, True), content_type = 'application/json', status = 200)
 		else:
 			return HttpResponse("Data missing.", status = 400)
@@ -83,3 +81,18 @@ def logout(request):
 		return HttpResponse("Failed loging out.", status = 400)
 	else:
 		return HttpResponse("Log out successfully.", status = 200)
+		
+def modify(request):
+	if (not request.user.is_authenticated):
+		return HttpResponse("Please log in.", status = 400)
+	
+	user = request.user
+	if (request.FILES and request.FILES.get('avatar')):
+		avatar = request.FILES.get('avatar')
+		if (avatar.size >= 2*1024*1024):
+			return HttpResponse("Avatar should be less than 2MB.", status = 400)
+		user.avatar = avatar
+		user.save()
+	
+	return HttpResponse(tools.userToDict(user)['avatar'])
+	

@@ -51,7 +51,7 @@ def detail(request):
 	if (item == None):
 		return HttpResponse("Team not found.", status = 400)
 		
-	if (request.user and item.captain.username == request.user.username):
+	if (request.user.is_authenticated and item.captain.username == request.user.username):
 		result = tools.teamToJson(item, True)
 	else:
 		result = tools.teamToJson(item, False)
@@ -59,7 +59,7 @@ def detail(request):
 	
 	
 def admin(request):
-	if ((not request.user) or request.user.is_authenticated == False):
+	if ((not request.user.is_authenticated) or request.user.is_authenticated == False):
 		return HttpResponse("Please log in.", status = 400)
 	user = request.user
 	
