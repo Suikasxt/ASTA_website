@@ -4,6 +4,7 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import Loading from '../loading.js'
 import { message, Button, Card, Col, Row } from 'antd';
+import UserShow from '../user/show.js'
 
 
 class List extends Component{
@@ -20,19 +21,22 @@ class List extends Component{
 			data: data,
 			crossDomain: true,
 			async: true,
+			xhrFields: {
+				withCredentials: true
+			},
 			success: function (result) {
 				this.setState({list : result});
 			}.bind(this)
 		})
 	}
 	componentWillMount(){
-		this.getList();
+		this.getList()
 	}
-	sendApplication = (id) => {
+	sendApplication = (id, cancel = false) => {
 		let url = global.constants.server + 'team/apply/'
 		$.post({
 			url: url,
-			data: {'id': id},
+			data: {id: id, cancel: cancel},
 			crossDomain: true,
 			async: true,
 			xhrFields: {
@@ -40,6 +44,7 @@ class List extends Component{
 			},
 			success: function (result) {
 				message.success(result)
+				this.getList()
 			}.bind(this),
 			error: function (result) {
 				message.error(result.responseText)
@@ -57,12 +62,39 @@ class List extends Component{
 				<Row gutter={16}>
 				{
 					this.state.list.map((item, index) => {
-						console.log(item)
 						return (
 							<Col span={8} key={item.id}>
-								<Card title={item.name} key={item.id} bodyStyle={{ height: 150, overflow: "auto" }}>
-									<p>{item.introduction}</p>
-									<Button type="primary" onClick={()=>this.sendApplication(item.id)}>Join them</Button>
+								<Card title={item.name} key={item.id} bodyStyle={{ minHeight: 150, overflow: "auto" }} extra={
+									item.application?(
+										<Button type="primary" onClick={()=>this.sendApplication(item.id, true)}>Cancel</Button>
+									):(
+										<Button type="primary" onClick={()=>this.sendApplication(item.id)}>Join them</Button>
+									)
+										
+								}>
+									<div>
+										{item.introduction}
+									</div>
+									<div style={{marginTop: 10, lineHeight: 2}}>
+										<div>
+											<b>Captain</b> :&nbsp;
+											<UserShow
+												username = {item.captain}
+											/>
+										</div>
+										<div style = {{marginBottom: 15}}>
+											<b>Members</b> :&nbsp;
+											{item.members.map((user, index) => {
+												return (
+													<UserShow style={{marginLeft: 2}} key={user.username}
+														mode = 'mini'
+														username = {user.username}
+														avatar = {user.avatar}
+													/>
+												)
+											})}
+										</div>
+									</div>
 								</Card>
 							</Col>
 						)

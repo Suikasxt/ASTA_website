@@ -30,8 +30,15 @@ def list(request):
 		
 	result = []
 	
+	user = None
+	if (request.user and request.user.is_authenticated):
+		user = request.user
 	for item in list:
-		result.append(tools.teamToDict(item))
+		info = tools.teamToDict(item)
+		if (user):
+			if (len(item.candidates.all().filter(username = user.username)) > 0):
+				info['application'] = True
+		result.append(info)
 	return HttpResponse(json.dumps(result), content_type = 'application/json')
 
 
@@ -65,19 +72,24 @@ def admin(request):
 	
 	contest = None
 	if (request.POST and request.POST.get('contest')):
-		contest = Contest.objects.filter(id = int(request.POST.get('contest')))
-	if (contest == None or len(contest) == 0):
-		return HttpResponse("Contest not found.", status = 400)
-	else:
-		contest = contest[0]
+		contestList = Contest.objects.filter(id = int(request.POST.get('contest')))
+		if (contestList == None or len(contestList) == 0):
+			return HttpResponse("Contest not found.", status = 400)
+		else:
+			contest = contestList[0]
 	
-	tmpList = tools.getTeamByUserContest(user.username, contest.id)
-	if (len(tmpList) == 0):
-		team = None
-	else:
-		team = tmpList[0]
+	team = None
+	if (request.POST and request.POST.get('team')):
+		teamList = Team.objects.filter(id = int(request.POST.get('team')))
+		if (teamList == None or len(teamList) == 0):
+			return HttpResponse("Team not found.", status = 400)
+		else:
+			team = teamList[0]
+	
 	if (request.POST and request.POST.get('name')):
 		if (team == None):
+			if (Contest == None):
+				return HttpResponse("Contest missing.", status = 400)
 			team = Team(captain = user, contest = contest)
 			team.save()
 			team.members.add(user)
@@ -86,8 +98,14 @@ def admin(request):
 	
 	if (team == None):
 		return HttpResponse("Team not found.", status = 400)
+	
+	
 	if (team.captain.username != request.user.username):
-		return HttpResponse("You are not the captain.", status = 400)
+		if (request.POST and request.POST.get('quit')):
+			team.members.remove(request.user)
+			return HttpResponse("Quit successfully.", status = 200)
+		else:
+			return HttpResponse("You are not the captain.", status = 400)
 	
 	
 	
@@ -101,8 +119,7 @@ def admin(request):
 		except:
 			return HttpResponse("User not found.", status = 400)
 		team.members.add(targetUser)
-		team.candidates.remove(targetUser)
-		Application.objects.filter(~Q(team__contest = contest), user = targetUser).delete()
+		targetUser.apply.clear()
 		
 	if (request.POST and request.POST.get('refuse')):
 		try:
@@ -138,13 +155,14 @@ def apply(request):
 	if (len(tools.getTeamByUserContest(request.user.username, contest.id))):
 		return HttpResponse("Already in a team now.", status = 400)
 	
-	membership = team.members.all().filter(id = request.user.id)
-	if (request.POST and request.POST.get('cancel') == True):
+	membership = team.candidates.all().filter(id = request.user.id)
+	if (request.POST and request.POST.get('cancel') == 'true'):
 		if (len(membership) == 0):
 			return HttpResponse("Application not found.", status = 400)
 		team.candidates.remove(request.user)
+		return HttpResponse("Application is canceled.")
 	else:
 		if (len(membership) > 0):
 			return HttpResponse("Application already exists.", status = 400)
 		team.candidates.add(request.user)
-	return HttpResponse("Apply successfully.")
+		return HttpResponse("Apply successfully.")

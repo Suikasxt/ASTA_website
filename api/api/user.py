@@ -62,15 +62,17 @@ def login(request):
 		
 			
 def getInfo(request):
-	if (request.GET == None or request.GET.get('username') == None):
+	if (request.GET and request.GET.get('username')):
+		username = request.GET.get('username')
+	else:
 		if (request.user.is_authenticated):
 			return HttpResponse(tools.userToJson(request.user, True), content_type = 'application/json', status = 200)
 		else:
 			return HttpResponse("Data missing.", status = 400)
-	
+			
 	user = User.objects.filter(username = username)
 	if (len(user) == 1):
-		return HttpResponse("Log in successfully.", status = 200)
+		return HttpResponse(tools.userToJson(user[0]), content_type = 'application/json', status = 200)
 	else:
 		return HttpResponse("User not found.", status = 400)
 

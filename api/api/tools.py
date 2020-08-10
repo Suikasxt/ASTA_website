@@ -26,7 +26,8 @@ def teamToDict(team, detail = False):
 	
 	memberList = team.members.all()
 	for member in memberList:
-			result['members'].append(userToDict(member))
+		if not member==team.captain:
+			result['members'].append(userToDict(member, detail))
 	
 	return result
 	
