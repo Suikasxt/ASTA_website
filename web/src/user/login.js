@@ -102,7 +102,7 @@ class Login extends Component{
 							</Button>
 						</Form.Item>
 						<div style = {{ textAlign : 'center'}}>
-							or <Link to="/register">Register</Link> now
+							<Link to="/resetPassword">Reset password</Link> or <Link to="/register">Register</Link> now
 						</div>
 					</Form>
 				</Card>

@@ -66,7 +66,7 @@ class List extends Component{
 							<Col span={8} key={item.id}>
 								<Card title={item.name} key={item.id} bodyStyle={{ minHeight: 150, overflow: "auto" }} extra={
 									item.application?(
-										<Button type="primary" onClick={()=>this.sendApplication(item.id, true)}>Cancel</Button>
+										<Button type="danger" onClick={()=>this.sendApplication(item.id, true)}>Cancel</Button>
 									):(
 										<Button type="primary" onClick={()=>this.sendApplication(item.id)}>Join them</Button>
 									)

@@ -14,12 +14,6 @@
 	margin-left: 10px;
 	margin-right: 0;
 }
-.title{
-	text-align: center;
-	font-size: 40px;
-	font-weight: bolder;
-	color: gray;
-}
 .ant-alert-error{
 	width: 300px;
 	margin: 20px;

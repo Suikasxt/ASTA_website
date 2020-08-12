@@ -1,0 +1,21 @@
+.info{
+	text-align: center;
+}
+.time{
+	font-size: 16px;
+	margin-left: 10px;
+	color: #00C5CD;
+}
+.title{
+	text-align: center;
+	font-size: 40px;
+	font-weight: bolder;
+	color: gray;
+	margin: 10px;
+}
+.tags{
+}
+.content{
+	font-size: 20px;
+	margin-left: 20px;
+}

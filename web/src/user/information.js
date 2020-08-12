@@ -1,8 +1,32 @@
 import '../config';
+import $ from 'jquery';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import './information.css';
-import { Upload, Button, message, Descriptions, Icon	} from 'antd';
+import { Upload, Button, message, Descriptions, Icon, Form, Input, Card } from 'antd';
+
+const formItemLayout = {
+	labelCol: {
+		xs: { span: 4 },
+		sm: { span: 4 },
+	},
+	wrapperCol: {
+		xs: { span: 20 },
+		sm: { span: 20 },
+	},
+};
+const tailFormItemLayout = {
+	wrapperCol: {
+		xs: {
+			span: 24,
+			offset: 0,
+		},
+		sm: {
+			span: 24,
+			offset: 0,
+		},
+	},
+};
 
 function beforeUpload(file) {
 	const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
@@ -28,14 +52,38 @@ class Informathion extends Component{
 			return;
 		}
 		if (info.file.status === 'done') {
-			this.props.updateUser({avatar: info.file.response})
+			this.props.updateUser()
 			this.setState({
 				avatarUploading: false,
 				avatarUrl: info.file.response});
 		}
-	};
+	}
+	handleSubmit = (e) => {
+		e.preventDefault();
+		this.props.form.validateFields((err, values) => {
+			if (!err) {
+				let url = global.constants.server + 'modify/'
+				this.serverRequest = $.post({
+					url: url,
+					data: values,
+					crossDomain: true,
+					xhrFields: {
+						withCredentials: true
+					},
+					success: function (result) {
+						message.success(result)
+						this.props.updateUser()
+					}.bind(this),
+					error: function (result) {
+						message.error(result.responseText)
+					}.bind(this),
+				})
+			}
+		});
+	}
 	render(){
 		const { user } = this.props
+		const { getFieldDecorator } = this.props.form
 		if (user == null) {
 			this.props.history.push('/')
 			return (
@@ -46,9 +94,9 @@ class Informathion extends Component{
 				</div>
 			)
 		}
-		
+		console.log(user)
 		return (
-			<div	id = "root">
+			<div id = "root" style={{ alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
 				<Upload
 					name="avatar"
 					listType="picture-card"
@@ -69,16 +117,75 @@ class Informathion extends Component{
 					)}
 				</Upload>
 				
-				<div id = 'username'>{user.username}</div>
-				<Descriptions	id = "information" bordered>
-					<Descriptions.Item label="Name"> {user.name} </Descriptions.Item>
-					<Descriptions.Item label="Email"> {user.email} </Descriptions.Item>
-					<Descriptions.Item label="Class"> {user.className} </Descriptions.Item>
-					<Descriptions.Item label="ID"> {user.id} </Descriptions.Item>
-				</Descriptions>
+				<Card style = {{width: '50%'}}>
+					<Form {...formItemLayout} onSubmit={this.handleSubmit} className="form">
+						<Form.Item label="邮箱">
+							{getFieldDecorator('email', {
+								initialValue: user.email,
+								rules: [
+									{ required: true, message: 'Please input your email!', },
+									{ type: 'email', message: 'The input is not valid E-mail!', },
+								],
+							})(
+								<Input
+									prefix={<Icon type="mail" style={{ color: 'rgba(0,0,0,.25)' }} />}
+									disabled={true}
+								/>,
+							)}
+						</Form.Item>
+						<Form.Item label="昵称">
+							{getFieldDecorator('username', {
+								initialValue: user.username,
+								rules: [{ required: true, message: 'Please input your username!' }],
+							})(
+								<Input
+									prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+								/>,
+							)}
+						</Form.Item>
+						<Form.Item label="学号">
+							{getFieldDecorator('id', {
+								initialValue: user.id,
+								rules: [{ required: true, message: 'Please input your ID!' }],
+							})(
+								<Input
+									prefix={<Icon type="idcard" style={{ color: 'rgba(0,0,0,.25)' }} />}
+								/>,
+							)}
+						</Form.Item>
+						<Form.Item label="姓名">
+							{getFieldDecorator('name', {
+								initialValue: user.name,
+								rules: [{ required: true, message: 'Please input your name!' }],
+							})(
+								<Input
+									prefix={<Icon type="contacts" style={{ color: 'rgba(0,0,0,.25)' }} />}
+								/>,
+							)}
+						</Form.Item>
+						<Form.Item label="班级">
+							{getFieldDecorator('className', {
+								initialValue: user.className,
+								rules: [{ required: true, message: 'Please input your class!' }],
+							})(
+								<Input
+									prefix={<Icon type="team" style={{ color: 'rgba(0,0,0,.25)' }} />}
+								/>,
+							)}
+						</Form.Item>
+						<Form.Item {...tailFormItemLayout} style = {{ textAlign : 'center'}}>
+							<Button type="primary" htmlType="submit" className="form-button">
+								Modify
+							</Button>
+						</Form.Item>
+						<div style = {{ textAlign : 'center'}}>
+							<Link to="/resetPassword">Reset password</Link>
+						</div>
+					</Form>
+				</Card>
 			</div>
 		)
 	}
 }
 
-export default Informathion;
+export default Form.create({ name: 'modify' })(Informathion);

@@ -1,4 +1,4 @@
-from database.models import User, Team
+from database.models import User, Team, Blog, Tag
 import json
 
 def userToDict(user, detail = False):
@@ -34,6 +34,18 @@ def teamToDict(team, detail = False):
 def teamToJson(team, detail = False):
 	return json.dumps(teamToDict(team, detail))
 	
+def blogToDict(blog):
+	result = {}
+	result['id'] = blog.id
+	result['title'] = blog.title
+	result['content'] = blog.content
+	result['author'] = blog.author.username
+	result['time'] = blog.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+	result['tags'] = []
+	tags = blog.tags.all()
+	for tag in tags:
+		result['tags'].append(tag.name)
+	return result
 
 def getTeamByUserContest(username, contestId):
 	return User.objects.get(username = username).belong.filter(contest__id = contestId)

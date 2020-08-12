@@ -133,3 +133,10 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
+EMAIL_USE_SSL = True
+EMAIL_HOST = 'smtp.163.com'
+EMAIL_PORT = 465
+EMAIL_HOST_USER = 'swm_sxt@163.com'
+EMAIL_HOST_PASSWORD = 'VZCBARFGYSNEBFHE'
+DEFAULT_FROM_EMAIL = '清华大学自动化系学生科协<swm_sxt@163.com>'

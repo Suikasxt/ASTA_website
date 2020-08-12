@@ -1,6 +1,7 @@
 import '../config';
 import $ from 'jquery';
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Popconfirm, Form, Icon, Input, Button, Card, Modal, Empty, message, Table, Divider, Result } from 'antd';
 import Loading from '../loading.js'
 import './admin.css'
@@ -174,7 +175,16 @@ class Admin extends Component{
 		}
 		if (this.props.user == null){
 			return (
-				<div>Please login first.</div>
+				<div>
+					<Result
+						title={
+							<div>
+								Please <Link to='/login'>login</Link> first.
+							</div>
+						}
+					/>
+					
+				</div>
 			)
 		}
 		if (this.state.team == null){

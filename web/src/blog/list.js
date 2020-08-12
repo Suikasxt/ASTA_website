@@ -40,7 +40,7 @@ class ListElement extends Component{
 					renderItem={item => (
 						<List.Item key={item.id}>
 							<List.Item.Meta
-								title={<Link to={"blog/"+item.id}>{item.title}</Link>}
+								title={<Link to={"/blog/"+item.id}>{item.title}</Link>}
 								description={item.author + '  ' + item.time}
 							/>
 						</List.Item>

@@ -1,9 +1,73 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from database.models import User
+from database.models import User, Token
 from django.contrib import auth
-from api import tools
+from api import tools, settings
+from itsdangerous import URLSafeTimedSerializer as utsr
+from django.core.mail import send_mail
+import django.utils.timezone as timezone
+import datetime
+import base64
 
+class TokenCtl:
+	def __init__(self, security_key):
+		self.security_key = security_key
+		self.salt = base64.encodebytes(security_key.encode('utf8'))
+
+	# 生成token
+	def generate_validate_token(self, email):
+		serializer = utsr(self.security_key)
+		return serializer.dumps(email, self.salt)
+
+	# 验证token
+	def confirm_validate_token(self, token, expiration=3600):
+		serializer = utsr(self.security_key)
+		return serializer.loads(token, salt=self.salt, max_age=expiration)
+		
+token_confirm = TokenCtl(settings.SECRET_KEY)
+
+def sendToken(request):
+	if (request.GET and request.GET.get('email')):
+		try:
+			email = request.GET.get('email')
+			token = token_confirm.generate_validate_token(email)
+			
+			content = "Your token is:<br/><b>{}</b><br/>Thank you for registering.".format(token)
+			send_mail(
+				'Welcome to ASTA',
+				'Token from ASTA',
+				None,
+				[email],
+				html_message = content,
+			)
+			
+			data = Token.objects.filter(email = email)
+			if (len(data) > 0):
+				data = data[0]
+				data.key = token
+				data.updateTime = timezone.now()
+				data.save()
+			else:
+				data = Token(email = email, key = token)
+				data.save()
+				
+			return HttpResponse("Send successfully.", status = 200)
+		except:
+			return HttpResponse("Failed sending token.", status = 400)
+	else:
+		return HttpResponse("Email missing.", status = 400)
+		
+def tokenComfirm(email, token):
+	data = Token.objects.filter(email = email, key = token)
+	print(email)
+	print(token)
+	print(data)
+	if (len(data) > 0):
+		if (data[0].updateTime > timezone.now() - datetime.timedelta(minutes=30)):
+			return True
+	return False
+
+	
 def register(request):
 	if (request.POST == None):
 		return HttpResponse("Only POST is allowed.", status = 400)
@@ -19,6 +83,9 @@ def register(request):
 		return HttpResponse("Name missing.", status = 400)
 	if (request.POST.get('className') == None):
 		return HttpResponse("ClassName missing.", status = 400)
+	if (request.POST.get('token') == None):
+		return HttpResponse("Token missing.", status = 400)
+	
 	
 	try:
 		id = int(request.POST.get('id'))
@@ -31,6 +98,10 @@ def register(request):
 	password = request.POST.get('password')
 	name = request.POST.get('name')
 	className = request.POST.get('className')
+	token = request.POST.get('token')
+	
+	if (not tokenComfirm(email, token)):
+		return HttpResponse("Token error.", status = 400)
 	if (len(User.objects.filter(email = email)) > 0):
 		return HttpResponse("Email exists.", status = 400)
 	if (len(User.objects.filter(username = username)) > 0):
@@ -82,13 +153,32 @@ def logout(request):
 	except:
 		return HttpResponse("Failed loging out.", status = 400)
 	else:
-		return HttpResponse("Log out successfully.", status = 200)
+		response = HttpResponse("Log out successfully.", status = 200)
+		response.delete_cookie('sessionid')
+		return response
 		
 def modify(request):
 	if (not request.user.is_authenticated):
 		return HttpResponse("Please log in.", status = 400)
 	
 	user = request.user
+	if (request.POST and request.POST.get('username') and request.POST.get('username') != user.username):
+		tmp = User.objects.filter(username = request.POST.get('username'))
+		if (len(tmp) > 0):
+			return HttpResponse("username already exists.", status = 400)
+		user.username = request.POST.get('username')
+		user.save()
+	if (request.POST and request.POST.get('name')):
+		user.name = request.POST.get('name')
+		user.save()
+	if (request.POST and request.POST.get('className')):
+		user.className = request.POST.get('className')
+		user.save()
+	if (request.POST and request.POST.get('id')):
+		user.id = int(request.POST.get('id'))
+		user.save()
+		
+		
 	if (request.FILES and request.FILES.get('avatar')):
 		avatar = request.FILES.get('avatar')
 		if (avatar.size >= 2*1024*1024):
@@ -96,5 +186,28 @@ def modify(request):
 		user.avatar = avatar
 		user.save()
 	
-	return HttpResponse(tools.userToDict(user)['avatar'])
+	return HttpResponse("Modify successfully.", status = 200)
+
+def resetPassword(request):
+	if (request.POST == None):
+		return HttpResponse("Only POST is allowed.", status = 400)
+	if (request.POST.get('email') == None):
+		return HttpResponse("Email missing.", status = 400)
+	if (request.POST.get('password') == None):
+		return HttpResponse("Password missing.", status = 400)
+	if (request.POST.get('token') == None):
+		return HttpResponse("Token missing.", status = 400)
+	email = request.POST.get('email')
+	password = request.POST.get('password')
+	token = request.POST.get('token')
 	
+	if (tokenComfirm(email, token)):
+		user = User.objects.filter(email = email)
+		if (len(user) > 0):
+			user[0].set_password(password)
+			user[0].save()
+			return HttpResponse("Modify successfully.", status = 200)
+		else:
+			return HttpResponse("User not found.", status = 400)
+	else:
+		return HttpResponse("Token error.", status = 400)

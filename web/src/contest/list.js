@@ -39,7 +39,7 @@ class ListElement extends Component{
 								<Panel header={item.name} key={index} extra={item.time}>
 									<p dangerouslySetInnerHTML={{ __html: item.introduction}}></p>
 									<Link to={"/contest/" + item.id} style={{display: 'inline'}}>
-										<Button type="primary" style={{display: 'inline'}}>Enter</Button>
+										<Button style={{display: 'inline'}}>Enter</Button>
 									</Link>
 								</Panel>
 							)

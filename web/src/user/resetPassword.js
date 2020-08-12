@@ -25,7 +25,7 @@ const tailFormItemLayout = {
 		},
 	},
 };
-class Register extends Component{
+class ResetPassword extends Component{
 	state = {
 	}
 	componentWillReceiveProps(nextProps){
@@ -60,7 +60,7 @@ class Register extends Component{
 		e.preventDefault();
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				let url = global.constants.server + 'register/'
+				let url = global.constants.server + 'resetPassword/'
 				this.serverRequest = $.post({
 					url: url,
 					data: values,
@@ -70,6 +70,7 @@ class Register extends Component{
 					},
 					success: function (result) {
 						message.success(result)
+						this.props.logout()
 						this.props.history.push('/login')
 					}.bind(this),
 					error: function (result) {
@@ -92,7 +93,7 @@ class Register extends Component{
 		const { getFieldDecorator } = this.props.form;
 		return (
 			<div	id = "root" style={{ alignItems : 'center', justifyContent: 'center', display : 'flex', flexDirection: 'column' }}>
-				<span className="title">Register</span>
+				<span className="title">Reset Passward</span>
 				<Card style = {{width: '70%'}}>
 					<Form {...formItemLayout} onSubmit={this.handleSubmit} className="form">
 						<Form.Item label="邮箱">
@@ -121,16 +122,6 @@ class Register extends Component{
 								/>,
 							)}
 						</Form.Item>
-						<Form.Item label="昵称">
-							{getFieldDecorator('username', {
-								rules: [{ required: true, message: 'Please input your username!' }],
-							})(
-								<Input
-									prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-									placeholder="Username"
-								/>,
-							)}
-						</Form.Item>
 						<Form.Item label="密码">
 							{getFieldDecorator('password', {
 								rules: [{ required: true, message: 'Please input your password!' }],
@@ -156,44 +147,11 @@ class Register extends Component{
 								/>,
 							)}
 						</Form.Item>
-						<Form.Item label="学号">
-							{getFieldDecorator('id', {
-								rules: [{ required: true, message: 'Please input your ID!' }],
-							})(
-								<Input
-									prefix={<Icon type="idcard" style={{ color: 'rgba(0,0,0,.25)' }} />}
-									placeholder="id"
-								/>,
-							)}
-						</Form.Item>
-						<Form.Item label="姓名">
-							{getFieldDecorator('name', {
-								rules: [{ required: true, message: 'Please input your name!' }],
-							})(
-								<Input
-									prefix={<Icon type="contacts" style={{ color: 'rgba(0,0,0,.25)' }} />}
-									placeholder="Name"
-								/>,
-							)}
-						</Form.Item>
-						<Form.Item label="班级">
-							{getFieldDecorator('className', {
-								rules: [{ required: true, message: 'Please input your class!' }],
-							})(
-								<Input
-									prefix={<Icon type="team" style={{ color: 'rgba(0,0,0,.25)' }} />}
-									placeholder="Class"
-								/>,
-							)}
-						</Form.Item>
 						<Form.Item {...tailFormItemLayout} style = {{ textAlign : 'center'}}>
 							<Button type="primary" htmlType="submit" className="form-button">
-								Register
+								Reset
 							</Button>
 						</Form.Item>
-						<div style = {{ textAlign : 'center'}}>
-							or <Link to="/login">Login</Link> now
-						</div>
 					</Form>
 				</Card>
 			</div>
@@ -201,4 +159,4 @@ class Register extends Component{
 	}
 }
 
-export default Form.create({ name: 'normal_register' })(Register);
+export default Form.create({ name: 'normal_register' })(ResetPassword);

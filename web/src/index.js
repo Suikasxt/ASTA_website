@@ -9,6 +9,7 @@ import { Layout, Menu, Typography, Icon, Button } from 'antd';
 import Home from './home.js';
 import Login from './user/login.js';
 import Register from './user/register.js';
+import ResetPassword from './user/resetPassword.js';
 import Information from './user/information.js';
 import ContestList from './contest/list.js';
 import ContestDetail from './contest/detail.js';
@@ -48,9 +49,7 @@ class App extends React.Component {
 	};
 	updateUser = (data = null) => {
 		if (data != null){
-			if (data.avatar != null){
-				this.state.user.avatar = data.avatar
-			}
+			this.setState({user: data})
 			return
 		}
 		if (this.state.userLoading) return;
@@ -128,11 +127,11 @@ class App extends React.Component {
 		return (
 			<Router>
 				<Layout style={{ minHeight: '100vh' }}>
-					<Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} theme="light">
+					<Sider collapsible collapsed={this.state.collapsed} onCollapse={this.onCollapse} theme="dark">
 						<div className="logo">
 							<img className="logo_img" src={ASTA_logo} alt="logo" />
 						</div>
-						<Menu theme="light" defaultSelectedKeys={['1']} mode="inline">
+						<Menu theme="dark" defaultSelectedKeys={['1']} mode="inline">
 							<Menu.Item key="home">
 								<Link to="/">
 									<Icon type="pie-chart" />
@@ -179,6 +178,11 @@ class App extends React.Component {
 							/>
 							<Route path="/register" exact render={props =>
 								<Register {...props}/>}
+							/>
+							<Route path="/resetPassword" exact render={props =>
+								<ResetPassword 
+									logout={this.logout.bind(this)}
+								{...props}/>}
 							/>
 							<Route path="/contest" exact render={props =>
 								<ContestList
