@@ -8,11 +8,16 @@ import json
 def list(request):
 	if (request.GET and request.GET.get('tag')):
 		try:
-			list = Tag.objects.get(name = request.GET.get('tag')).blog_set.all()
+			Query = Tag.objects.get(name = request.GET.get('tag')).blog_set
 		except:
 			return HttpResponse("Data error.", status = 400)
 	else:
-		list = Blog.objects.all().order_by('-timestamp')
+		Query = Blog.objects
+		
+	if (request.GET and request.GET.get('author')):
+		Query = Query.filter(author__username = request.GET['author'])
+	
+	list = Query.all().order_by('-timestamp')
 	result = []
 	for item in list:
 		result.append(tools.blogToDict(item))

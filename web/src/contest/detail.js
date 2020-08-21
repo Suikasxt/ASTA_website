@@ -63,6 +63,7 @@ class Detail extends Component{
 							user={this.props.user}
 							padding={10}
 							tag={this.state.data.name}
+							author='ASTA'
 							{...this.props}
 						/>
 					</TabPane>

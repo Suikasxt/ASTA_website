@@ -65,6 +65,7 @@ class Detail extends Component{
 			},
 			success: function (result) {
 				message.success(result)
+				this.setState({content: ''})
 				this.getCommentList()
 			}.bind(this),
 			error: function (result) {
@@ -126,6 +127,7 @@ class Detail extends Component{
 				</div>
 				{this.state.comments &&(
 					<List
+						locale={{emptyText:'No comment now.'}}
 						className="comment-list"
 						header={`${this.state.comments.length} replies`}
 						itemLayout="horizontal"

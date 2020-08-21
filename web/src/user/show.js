@@ -7,16 +7,16 @@ import { message, Avatar, Tooltip } from 'antd';
 class UserShow extends Component{
 	state = {
 	}
-	componentWillMount(){
-		if (this.props.username != null){
-			if (this.props.avatar != null){
-				this.setState({user: {username: this.props.username, avatar: this.props.avatar}})
+	updateUser = (data) => {
+		if (data.username != null){
+			if (data.avatar != null){
+				this.setState({user: {username: data.username, avatar: data.avatar}})
 				return
 			}
 			let url = global.constants.server + 'user/'
 			$.get({
 				url: url,
-				data: {username: this.props.username},
+				data: {username: data.username},
 				crossDomain: true,
 				xhrFields: {
 					withCredentials: true
@@ -29,6 +29,12 @@ class UserShow extends Component{
 				}.bind(this),
 			});
 		}
+	}
+	componentWillMount(){
+		this.updateUser(this.props)
+	}
+	componentWillReceiveProps(nextProps){
+		this.updateUser(nextProps)
 	}
 	render(){
 		if (this.state.user == null){
