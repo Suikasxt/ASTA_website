@@ -10,7 +10,7 @@ def list(request):
 		try:
 			Query = Tag.objects.get(name = request.GET.get('tag')).blog_set
 		except:
-			return HttpResponse("Data error.", status = 400)
+			return HttpResponse("Tag not found.", status = 400)
 	else:
 		Query = Blog.objects
 		
