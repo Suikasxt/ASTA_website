@@ -2,26 +2,15 @@ import '../config';
 import { Link } from 'react-router-dom';
 import $ from 'jquery';
 import React, { Component } from 'react';
-import './detail.css';
-import { Comment, message, Button, Card, Modal, Tag, Tabs, List, Divider, Form, Input, Avatar } from 'antd';
+import { Comment, message, Button, Card, Modal, Tag, Tabs, List, Divider, Form, Input, Avatar, Popconfirm } from 'antd';
 import Loading from '../loading.js'
 import UserShow from '../user/show.js'
+import Editor from 'for-editor';
+import './detail.css';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
 const { TextArea } = Input;
 
-const Editor = ({ onChange, onSubmit, submitting, value }) => (
-	<div>
-		<Form.Item>
-			<TextArea rows={4} onChange={onChange} value={value} />
-		</Form.Item>
-		<Form.Item>
-			<Button htmlType="submit" loading={submitting} onClick={onSubmit} type="primary">
-				Add Comment
-			</Button>
-		</Form.Item>
-	</div>
-);
 class Detail extends Component{
 	state = {
 		submitting: false,
@@ -98,6 +87,29 @@ class Detail extends Component{
 		this.getInfo()
 		this.getCommentList()
 	}
+	componentWillReceiveProps(nextProps){
+		this.props = nextProps
+		this.getInfo()
+		this.getCommentList()
+	}
+	deleteBlog(id = this.props.match.params.id){
+		let url = global.constants.server + 'blog/delete/';
+		$.post({
+			url: url,
+			crossDomain: true,
+			data: {'id': id},
+			xhrFields: {
+				withCredentials: true
+			},
+			success: function (result) {
+				message.success(result)
+				this.props.history.push('/blog')
+			}.bind(this),
+			error: function (result) {
+				message.error(result.responseText)
+			}.bind(this),
+		})
+	}
 	render(){
 		if (this.state.data == null){
 			return (
@@ -112,9 +124,35 @@ class Detail extends Component{
 				<div className='info'>
 					<UserShow username={this.state.data.author}/>
 					<span className='time'>{this.state.data.time}</span>
+					 
+					{(this.props.user && (this.props.user.isStaff || this.props.user.username==this.state.data.author))&&(
+						<span style={{marginLeft: 20}}>
+							<Link to={'/blogEdit/' + id}>
+								<Button type="primary" shape="circle" icon="edit"/>
+							</Link>
+							<Popconfirm
+								placement="bottom"
+								title={(
+									<div>
+										<p>Do you want to <b>delete</b> this blog?</p>
+									</div>
+								)}
+								onConfirm={() => this.deleteBlog()}
+								okText="Yes"
+								cancelText="No"
+							>
+								<Button type="danger" shape="circle" icon="delete"/>
+							</Popconfirm>
+						</span>
+					)}
 				</div>
 				<Divider />
-				<div dangerouslySetInnerHTML={{ __html: this.state.data.content}} className='content'></div>
+				<Editor
+					placeholder='Begin editing...'
+					preview={true}
+					value={this.state.data.content}
+					toolbar={{}}
+				/>
 				<Divider />
 				<div className='tags'>
 					{
@@ -154,12 +192,16 @@ class Detail extends Component{
 								/>
 							}
 							content={
-								<Editor
-									onChange={this.handleChange}
-									onSubmit={this.handleSubmit}
-									submitting={this.state.submitting}
-									value={this.state.content}
-								/>
+								<div>
+									<Form.Item>
+										<TextArea rows={4} onChange={this.handleChange} value={this.state.content} />
+									</Form.Item>
+									<Form.Item>
+										<Button htmlType="submit" loading={this.state.submitting} onClick={this.handleSubmit} type="primary">
+											Add Comment
+										</Button>
+									</Form.Item>
+								</div>
 							}
 						/>
 					</div>

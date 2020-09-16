@@ -35,6 +35,8 @@ urlpatterns = [
 	path('contest/list/', contest.list),
 	path('blog/', blog.detail),
 	path('blog/list/', blog.list),
+	path('blog/edit/', blog.edit),
+	path('blog/delete/', blog.delete),
 	path('comment/add/', blog.addComment),
 	path('comment/list/', blog.commentList),
 	path('team/', team.detail),

@@ -4,7 +4,7 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import Loading from '../loading.js'
 import { Button, Card, Col, Row, List, Input, Form, Icon, Divider, message, Tag } from 'antd';
-import UserShow from '../user/show.js'
+import UserShow from '../user/show.js';
 import './list.css';
 
 
@@ -52,6 +52,11 @@ class ListElement extends Component{
 		const { getFieldDecorator } = this.props.form;
 		return (
 			<div id = "root" style = {{padding: this.props.padding ? this.props.padding : 60}}>
+				<Link to="/blogEdit">
+					<Button type="primary" style={{marginBottom: 20}}>
+						New Blog
+					</Button>
+				</Link>
 				<Form layout="inline" onSubmit={this.handleSubmit}>
 					<Form.Item label='Author'>
 						{getFieldDecorator('author', {
@@ -74,7 +79,7 @@ class ListElement extends Component{
 						)}
 					</Form.Item>
 					<Form.Item>
-						<Button type="primary" htmlType="submit">
+						<Button htmlType="submit">
 							Search
 						</Button>
 					</Form.Item>

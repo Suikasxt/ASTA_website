@@ -8,6 +8,7 @@ def userToDict(user, detail = False):
 		result['email'] = user.email
 		result['name'] = user.name
 		result['className'] = user.className
+		result['isStaff'] = user.is_staff
 		
 	result['avatar'] = 'media/' + str(user.avatar)
 	result['username'] = user.username

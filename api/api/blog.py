@@ -33,6 +33,68 @@ def detail(request):
 	item = list[0]
 	return HttpResponse(json.dumps(tools.blogToDict(item)), content_type = 'application/json')
 
+def edit(request):
+	if (not request.user.is_authenticated):
+		return HttpResponse("Please log in.", status = 400)
+	if (request.POST == None):
+		return HttpResponse("Only POST is allowed.", status = 400)
+		
+	if (not request.POST.get('content')):
+		return HttpResponse("Content missing.", status = 400)
+	if (not request.POST.get('title')):
+		return HttpResponse("Title missing.", status = 400)
+	if (request.POST.get('tags') == None):
+		return HttpResponse("Tags missing.", status = 400)
+	
+	title = request.POST.get('title')
+	content = request.POST.get('content')
+	tags = json.loads(request.POST.get('tags'))
+	if (request.POST.get('id') == None):
+		blog = Blog(author = request.user)
+		blog.save()
+	else:
+		try:
+			blog = Blog.objects.filter(id = int(request.POST.get('id')))[0]
+		except:
+			return HttpResponse("Blog not found.", status = 400)
+	
+	if (blog.author != request.user and request.user.is_staff == False):
+		return HttpResponse("Permission denied.", status = 400)
+	
+	blog.title = title
+	blog.content = content
+	blog.tags.clear()
+	blog.save()
+	for tagText in tags:
+		tagFind = Tag.objects.filter(name = tagText)
+		if len(tagFind) > 0:
+			tag = tagFind[0]
+		else:
+			tag = Tag(name = tagText)
+			tag.save()
+		blog.tags.add(tag)
+		
+	return HttpResponse("Publish successfully.", status = 200)
+
+def delete(request):
+	if (not request.user.is_authenticated):
+		return HttpResponse("Please log in.", status = 400)
+	if (request.POST == None):
+		return HttpResponse("Only POST is allowed.", status = 400)
+	
+	try:
+		blog = Blog.objects.filter(id = int(request.POST.get('id')))[0]
+	except:
+		return HttpResponse("Blog not found.", status = 400)
+	
+	if (blog.author != request.user and request.user.is_staff == False):
+		return HttpResponse("Permission denied.", status = 400)
+	
+	blog.delete()
+	return HttpResponse("Delete successfully.", status = 200)
+	
+
+
 def commentList(request):
 	list = []
 	if (request.GET and request.GET.get('blog')):

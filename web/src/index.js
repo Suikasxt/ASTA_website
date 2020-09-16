@@ -15,7 +15,7 @@ import ContestList from './contest/list.js';
 import ContestDetail from './contest/detail.js';
 import BlogList from './blog/list.js';
 import BlogDetail from './blog/detail.js';
-import BlogWriting from './blog/write.js';
+import BlogEditor from './blog/edit.js';
 import TeamList from './team/list.js';
 import TeamAdmin from './team/admin.js';
 import ASTA_logo from './assets/ASTA_logo.jpg'
@@ -203,14 +203,20 @@ class App extends React.Component {
 									{...props}
 								/>}
 							/>
-							<Route path="/blogWriting" exact render={props =>
-								<BlogWriting
+							<Route path="/blog/:id" exact render={props =>
+								<BlogDetail
 									user={this.state.user}
 									{...props}
 								/>}
 							/>
-							<Route path="/blog/:id" exact render={props =>
-								<BlogDetail
+							<Route path="/blogEdit" exact render={props =>
+								<BlogEditor
+									user={this.state.user}
+									{...props}
+								/>}
+							/>
+							<Route path="/blogEdit/:id" exact render={props =>
+								<BlogEditor
 									user={this.state.user}
 									{...props}
 								/>}
