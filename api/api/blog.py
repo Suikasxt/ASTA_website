@@ -58,7 +58,7 @@ def edit(request):
 		except:
 			return HttpResponse("Blog not found.", status = 400)
 	
-	if (blog.author != request.user and request.user.is_staff == False):
+	if (blog.author != request.user):
 		return HttpResponse("Permission denied.", status = 400)
 	
 	blog.title = title
@@ -87,7 +87,7 @@ def delete(request):
 	except:
 		return HttpResponse("Blog not found.", status = 400)
 	
-	if (blog.author != request.user and request.user.is_staff == False):
+	if (blog.author != request.user):
 		return HttpResponse("Permission denied.", status = 400)
 	
 	blog.delete()

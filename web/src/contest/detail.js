@@ -8,6 +8,7 @@ import Loading from '../loading.js'
 import TeamList from '../team/list.js';
 import TeamAdmin from '../team/admin.js';
 import BlogList from '../blog/list.js';
+import MarkdownView from '../markdown/view.js'
 const { confirm } = Modal;
 const { TabPane } = Tabs;
 
@@ -52,10 +53,13 @@ class Detail extends Component{
 		const { id } = this.props.match.params
 		return (
 			<div id = "root">
+			
 				<div className='title'> {this.state.data.name} </div>
 				<Tabs activeKey={this.state.activeKey} onTabClick={this.tabChage}>
 					<TabPane tab="Home" key="home">
-						<div dangerouslySetInnerHTML={{ __html: this.state.data.detail}}></div>
+						<MarkdownView
+							source={this.state.data.detail}
+						/>
 					</TabPane>
 					
 					<TabPane tab="Blogs" key="blog">

@@ -52,11 +52,6 @@ class ListElement extends Component{
 		const { getFieldDecorator } = this.props.form;
 		return (
 			<div id = "root" style = {{padding: this.props.padding ? this.props.padding : 60}}>
-				<Link to="/blogEdit">
-					<Button type="primary" style={{marginBottom: 20}}>
-						New Blog
-					</Button>
-				</Link>
 				<Form layout="inline" onSubmit={this.handleSubmit}>
 					<Form.Item label='Author'>
 						{getFieldDecorator('author', {
@@ -79,9 +74,16 @@ class ListElement extends Component{
 						)}
 					</Form.Item>
 					<Form.Item>
-						<Button htmlType="submit">
-							Search
-						</Button>
+						<Button htmlType="submit" icon="search"/>
+					</Form.Item>
+					<Form.Item>
+						{this.props.user&&(
+							<Link to="/blogEdit">
+								<Button type="primary" icon="edit" style={{marginBottom: 20}}>
+									New Blog
+								</Button>
+							</Link>
+						)}
 					</Form.Item>
 				</Form>
 				<Divider />

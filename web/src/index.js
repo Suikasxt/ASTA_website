@@ -4,6 +4,7 @@ import { HashRouter as Router, Link, Route } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.css';
+import 'github-markdown-css/github-markdown.css';
 import $ from 'jquery';
 import { Layout, Menu, Typography, Icon, Button } from 'antd';
 import Home from './home.js';

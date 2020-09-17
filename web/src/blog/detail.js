@@ -3,9 +3,10 @@ import { Link } from 'react-router-dom';
 import $ from 'jquery';
 import React, { Component } from 'react';
 import { Comment, message, Button, Card, Modal, Tag, Tabs, List, Divider, Form, Input, Avatar, Popconfirm } from 'antd';
-import Loading from '../loading.js'
-import UserShow from '../user/show.js'
-import Editor from 'for-editor';
+import Loading from '../loading.js';
+import UserShow from '../user/show.js';
+import MarkdownView from '../markdown/view.js'
+import MarkdownEditor from '../markdown/edit.js';
 import './detail.css';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
@@ -16,9 +17,9 @@ class Detail extends Component{
 		submitting: false,
 		content: '',
 	}
-	handleChange = e => {
+	handleChange = value => {
 		this.setState({
-			content: e.target.value,
+			content: value,
 		});
 	}
 	getCommentList = () => {
@@ -125,7 +126,7 @@ class Detail extends Component{
 					<UserShow username={this.state.data.author}/>
 					<span className='time'>{this.state.data.time}</span>
 					 
-					{(this.props.user && (this.props.user.isStaff || this.props.user.username==this.state.data.author))&&(
+					{(this.props.user && this.props.user.username==this.state.data.author)&&(
 						<span style={{marginLeft: 20}}>
 							<Link to={'/blogEdit/' + id}>
 								<Button type="primary" shape="circle" icon="edit"/>
@@ -147,12 +148,13 @@ class Detail extends Component{
 					)}
 				</div>
 				<Divider />
-				<Editor
-					placeholder='Begin editing...'
-					preview={true}
-					value={this.state.data.content}
-					toolbar={{}}
+				
+				
+				<MarkdownView
+					source={this.state.data.content}
 				/>
+				
+				
 				<Divider />
 				<div className='tags'>
 					{
@@ -173,9 +175,12 @@ class Detail extends Component{
 						renderItem={item => (
 							<li>
 								<Comment
+									className='comment'
 									author={item.author}
 									avatar={global.constants.server + item.avatar}
-									content={item.content}
+									content=<MarkdownView
+											source={item.content}
+										/>
 									datetime={item.time}
 								/>
 							</li>
@@ -192,16 +197,20 @@ class Detail extends Component{
 								/>
 							}
 							content={
-								<div>
+								<Form>
 									<Form.Item>
-										<TextArea rows={4} onChange={this.handleChange} value={this.state.content} />
+										<MarkdownEditor
+											style={{height: 300}}
+											onChange={this.handleChange}
+											value={this.state.content}
+										/>
 									</Form.Item>
 									<Form.Item>
 										<Button htmlType="submit" loading={this.state.submitting} onClick={this.handleSubmit} type="primary">
 											Add Comment
 										</Button>
 									</Form.Item>
-								</div>
+								</Form>
 							}
 						/>
 					</div>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import django.utils.timezone as timezone
+from mdeditor.fields import MDTextField
 
 # Create your models here.
 class User(AbstractUser):
@@ -17,7 +18,7 @@ class Token(models.Model):
 class Contest(models.Model):
 	name = models.CharField(max_length = 100, default = '')
 	introduction = models.CharField(max_length = 1024, default = '')
-	detail = models.CharField(max_length = 4096, default = '')
+	detail = MDTextField()
 	timestamp = models.DateTimeField(auto_now_add = True)
 
 class Team(models.Model):
@@ -43,12 +44,12 @@ class Tag(models.Model):
 class Blog(models.Model):
 	title = models.CharField(max_length = 128, default = '')
 	author = models.ForeignKey(to = User, on_delete = models.SET_NULL, null = True)
-	content = models.CharField(max_length = 9192, default = '')
+	content = MDTextField()
 	timestamp = models.DateTimeField(auto_now_add = True)
 	tags = models.ManyToManyField(to = Tag, blank = True)
 
 class Comment(models.Model):
-	content = models.CharField(max_length = 1024, default = '')
+	content = MDTextField()
 	timestamp = models.DateTimeField(auto_now_add = True)
 	author = models.ForeignKey(to = User, on_delete = models.SET_NULL, null = True)
 	blog = models.ForeignKey(to = Blog, on_delete = models.SET_NULL, null = True)

@@ -4,9 +4,9 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import { Comment, message, Button, Card, Modal, Tag, Tabs, List, Divider, Form, Input, Icon } from 'antd';
 import { TweenOneGroup } from 'rc-tween-one';
-import Loading from '../loading.js'
-import UserShow from '../user/show.js'
-import Editor from 'for-editor';
+import Loading from '../loading.js';
+import UserShow from '../user/show.js';
+import Editor from '../markdown/edit.js';
 import './edit.css';
 const { confirm } = Modal;
 const { TabPane } = Tabs;
@@ -170,7 +170,7 @@ class Edit extends Component{
 					},
 					success: function (result) {
 						message.success(result)
-						this.props.history.push('/blog')
+						this.props.history.push('/blog/' + data.id)
 					}.bind(this),
 					error: function (result) {
 						message.error(result.responseText)
@@ -202,11 +202,7 @@ class Edit extends Component{
 							rules: [{ required: true, message: 'Please input the content!' }],
 							initialValue: this.state.content,
 						})(
-							<Editor
-								placeholder='Begin editing...'
-								preview={true}
-								subfield={true}
-							/>
+							<Editor/>
 						)}
 					</Form.Item>
 					<Form.Item>
