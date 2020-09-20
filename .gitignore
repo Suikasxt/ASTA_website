@@ -1,2 +1,3 @@
 *__pycache__*
-*.bat
+upload.bat
+api/asta.ini

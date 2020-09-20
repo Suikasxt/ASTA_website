@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from configparser import ConfigParser
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,11 +20,17 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '_*qww_o=*v@-+2=02!z6m6(+(me0=2w@a=2thi1w(ol=j^ior!'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+config=ConfigParser(allow_no_value=True)
+config.read(os.path.join(BASE_DIR, 'asta.ini'))
+# SECURITY WARNING: keep the secret key used in production secret!
+if DEBUG:
+	SECRET_KEY = '_*qww_o=*v@-+2=02!z6m6(+(me0=2w@a=2thi1w(ol=j^ior!'
+else:
+	SECRET_KEY = config.get('global', 'SECRET_KEY')
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -146,5 +153,5 @@ EMAIL_USE_SSL = True
 EMAIL_HOST = 'smtp.163.com'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = 'swm_sxt@163.com'
-EMAIL_HOST_PASSWORD = 'VZCBARFGYSNEBFHE'
+EMAIL_HOST_PASSWORD = config.get('global', 'EMAIL_HOST_PASSWORD')
 DEFAULT_FROM_EMAIL = '清华大学自动化系学生科协<swm_sxt@163.com>'

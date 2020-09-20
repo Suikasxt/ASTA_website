@@ -24,7 +24,7 @@ import ASTA_logo from './assets/ASTA_logo.jpg'
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
 const { Title } = Typography;
-const Title_word = "自动化系科协"
+const Title_word = "自动化系学生科协"
 const Tips_word = ""
 
 
