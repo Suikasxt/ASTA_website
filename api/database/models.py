@@ -20,6 +20,8 @@ class Contest(models.Model):
 	introduction = models.CharField(max_length = 1024, default = '')
 	detail = MDTextField()
 	timestamp = models.DateTimeField(auto_now_add = True)
+	limitOfMember = models.IntegerField(default = 100)
+	registerTimeUp = models.DateTimeField()
 
 class Team(models.Model):
 	name = models.CharField(max_length = 100, default = '')

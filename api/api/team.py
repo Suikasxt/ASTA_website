@@ -1,3 +1,4 @@
+import datetime
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from database.models import User, Contest, Team, Tag, Blog, Application
@@ -72,21 +73,21 @@ def admin(request):
 	
 	contest = None
 	if (request.POST and request.POST.get('contest')):
-		contestList = Contest.objects.filter(id = int(request.POST.get('contest')))
-		if (contestList == None or len(contestList) == 0):
+		try:
+			contest = Contest.objects.get(id = int(request.POST.get('contest')))
+		except:
 			return HttpResponse("Contest not found.", status = 400)
-		else:
-			contest = contestList[0]
 	
 	team = None
 	if (request.POST and request.POST.get('team')):
-		teamList = Team.objects.filter(id = int(request.POST.get('team')))
-		if (teamList == None or len(teamList) == 0):
+		try:
+			team = Team.objects.get(id = int(request.POST.get('team')))
+		except:
 			return HttpResponse("Team not found.", status = 400)
-		else:
-			team = teamList[0]
 	
 	if (request.POST and request.POST.get('name')):
+		if datetime.datetime.now() > contest.registerTimeUp:
+			return HttpResponse("Time for register is up.", status = 400)
 		if (team == None):
 			if (Contest == None):
 				return HttpResponse("Contest missing.", status = 400)
@@ -118,6 +119,12 @@ def admin(request):
 			targetUser = User.objects.get(username = request.POST.get('accept'))
 		except:
 			return HttpResponse("User not found.", status = 400)
+		
+		if datetime.datetime.now() > contest.registerTimeUp:
+			return HttpResponse("Time for register is up.", status = 400)
+		
+		if team.members.count() >= team.contest.limitOfMember:
+			return HttpResponse("The team is full.", status = 400)
 		team.members.add(targetUser)
 		targetUser.apply.clear()
 		
@@ -147,13 +154,21 @@ def apply(request):
 	if (not (request.POST and request.POST.get('id'))):
 		return HttpResponse("ID missing.", status = 400)
 		
-	teamList = Team.objects.filter(id = int(request.POST.get('id')))
-	if (len(teamList) == 0):
+	try:
+		team = Team.objects.get(id = int(request.POST.get('id')))
+	except:
 		return HttpResponse("Team not found.", status = 400)
-	team = teamList[0]
+	
+	
 	contest = team.contest
 	if (len(tools.getTeamByUserContest(request.user.username, contest.id))):
 		return HttpResponse("Already in a team now.", status = 400)
+	
+	if datetime.datetime.now() > contest.registerTimeUp:
+		return HttpResponse("Time for register is up.", status = 400)
+	
+	if team.members.count() >= contest.limitOfMember:
+		return HttpResponse("The team is full.", status = 400)
 	
 	membership = team.candidates.all().filter(id = request.user.id)
 	if (request.POST and request.POST.get('cancel') == 'true'):
