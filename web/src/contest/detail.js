@@ -57,9 +57,11 @@ class Detail extends Component{
 				<div className='title'> {this.state.data.name} </div>
 				<Tabs activeKey={this.state.activeKey} onTabClick={this.tabChage}>
 					<TabPane tab="Home" key="home">
-						<MarkdownView
-							source={this.state.data.detail}
-						/>
+						<div style={{marginLeft: 10}}>
+							<MarkdownView
+								source={this.state.data.detail}
+							/>
+						</div>
 					</TabPane>
 					
 					<TabPane tab="Blogs" key="blog">

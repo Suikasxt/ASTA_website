@@ -13,6 +13,7 @@ class MarkdownView extends Component{
 				renderers={{
 					code: CodeBlock,
 				}}
+				escapeHtml={false}
 				{...this.props}
 			/>
 		)

@@ -2,8 +2,8 @@ import '../config';
 import $ from 'jquery';
 import { withRouter, Link } from 'react-router-dom';
 import React, { Component } from 'react';
+import md5 from 'js-md5'
 import { message, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
-
 
 const formItemLayout = {
 	labelCol: {
@@ -45,9 +45,11 @@ class Login extends Component{
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
 				let url = global.constants.server + 'login/';
+				let data = values
+				data.password = md5(data.password)
 				this.serverRequest = $.post({
 					url: url,
-					data: values,
+					data: data,
 					crossDomain: true,
 					xhrFields: {
 						withCredentials: true

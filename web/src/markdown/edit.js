@@ -28,7 +28,7 @@ class MarkdownEditor extends Component{
 				}else{
 					message.error(result.message)
 				}
-				this.editor.current.$img2Url($file.name, result.url)
+				this.editor.current.$img2Url($file.name, global.constants.server + result.url)
 			}.bind(this),
 			error: function (result) {
 				message.error(result.responseText)

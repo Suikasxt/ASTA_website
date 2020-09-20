@@ -47,7 +47,6 @@ class TagEditor extends Component{
 			inputTagVisible: false,
 			inputTagValue: '',
 		});
-		console.log(tags);
 		this.triggerChange({ tags });
 	};
 	saveInputRef = input => (this.input = input);
@@ -72,7 +71,6 @@ class TagEditor extends Component{
 	render(){
 		const tags = this.props.value.tags;
 		const { inputTagValue, inputTagVisible } = this.state;
-		console.log(tags);
 		const tagChild = tags.map(this.forMap);
 		return(
 			<div>
@@ -170,7 +168,11 @@ class Edit extends Component{
 					},
 					success: function (result) {
 						message.success(result)
-						this.props.history.push('/blog/' + data.id)
+						if (data.id){
+							this.props.history.push('/blog/' + data.id)
+						}else{
+							this.props.history.push('/blog')
+						}
 					}.bind(this),
 					error: function (result) {
 						message.error(result.responseText)

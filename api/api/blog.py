@@ -10,7 +10,7 @@ def list(request):
 		try:
 			Query = Tag.objects.get(name = request.GET.get('tag')).blog_set
 		except:
-			return HttpResponse("Tag not found.", status = 400)
+			return HttpResponse(json.dumps([]), content_type = 'application/json')
 	else:
 		Query = Blog.objects
 		
@@ -27,10 +27,10 @@ def detail(request):
 	if (request.GET == None or request.GET.get('id') == None):
 		return HttpResponse("ID missing.", status = 400)
 	id = request.GET.get('id')
-	list = Blog.objects.filter(id = id)
-	if (len(list) == 0):
+	try:
+		item = Blog.objects.get(id = id)
+	except:
 		return HttpResponse("Blog not found.", status = 400)
-	item = list[0]
 	return HttpResponse(json.dumps(tools.blogToDict(item)), content_type = 'application/json')
 
 def edit(request):

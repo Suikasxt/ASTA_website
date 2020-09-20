@@ -253,7 +253,15 @@ class Admin extends Component{
 					onCancel={this.createTeamFormCancel}
 					onCreate={this.createTeamFormOK}
 				/>
-				<Card	title = {this.state.team.name}>
+				<Card bordered={false} title = 
+					<div
+						align='center'
+						style={{fontSize: 22, fontWeight:600}}
+					>
+						{this.state.team.name}
+					</div>
+				>
+				
 					<div style={{paddingBottom: 20, fontSize: 18}}>
 						{this.state.team.introduction}
 					</div>
@@ -331,7 +339,7 @@ class Admin extends Component{
 									okText="Yes"
 									cancelText="No"
 								>
-									<Button type="primary"> Accept </Button>
+									<Button type="primary" icon="check"/>
 								</Popconfirm>
 								
 								<Popconfirm
@@ -346,7 +354,7 @@ class Admin extends Component{
 									okText="Yes"
 									cancelText="No"
 								>
-									<Button type="danger"> Refuse </Button>
+									<Button type="danger" icon="close"/>
 								</Popconfirm>
 							</div>
 						)}/>

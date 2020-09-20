@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { withRouter, Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { message, Form, Icon, Input, Button, Checkbox, Card } from 'antd';
+import md5 from 'js-md5';
 const formItemLayout = {
 	labelCol: {
 		xs: { span: 4 },
@@ -61,9 +62,11 @@ class ResetPassword extends Component{
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
 				let url = global.constants.server + 'resetPassword/'
+				let data = values
+				data.password = md5(data.password)
 				this.serverRequest = $.post({
 					url: url,
-					data: values,
+					data: data,
 					crossDomain: true,
 					xhrFields: {
 						withCredentials: true
