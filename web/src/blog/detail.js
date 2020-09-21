@@ -5,7 +5,7 @@ import React, { Component } from 'react';
 import { Comment, message, Button, Card, Modal, Tag, Tabs, List, Divider, Form, Input, Avatar, Popconfirm } from 'antd';
 import Loading from '../loading.js';
 import UserShow from '../user/show.js';
-import MarkdownView from '../markdown/view.js'
+import MarkdownView from '../markdown/view.js';
 import MarkdownEditor from '../markdown/edit.js';
 import './detail.css';
 const { confirm } = Modal;

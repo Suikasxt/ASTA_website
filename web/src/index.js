@@ -19,7 +19,7 @@ import BlogDetail from './blog/detail.js';
 import BlogEditor from './blog/edit.js';
 import TeamList from './team/list.js';
 import TeamAdmin from './team/admin.js';
-import ASTA_logo from './assets/ASTA_logo.jpg'
+import ASTA_logo from './assets/logo_1.jpg';
 
 const { Header, Content, Footer, Sider } = Layout;
 const { SubMenu } = Menu;
