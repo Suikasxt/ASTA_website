@@ -5,6 +5,7 @@ def userToDict(user, detail = False):
 	result = {}
 	if detail:
 		result['id'] = user.id
+		result['studentId'] = user.studentId
 		result['email'] = user.email
 		result['name'] = user.name
 		result['className'] = user.className

@@ -86,11 +86,11 @@ def admin(request):
 			return HttpResponse("Team not found.", status = 400)
 	
 	if (request.POST and request.POST.get('name')):
-		if datetime.datetime.now() > contest.registerTimeUp:
-			return HttpResponse("Time for register is up.", status = 400)
 		if (team == None):
-			if (Contest == None):
+			if (contest == None):
 				return HttpResponse("Contest missing.", status = 400)
+			if datetime.datetime.now() > contest.registerTimeUp:
+				return HttpResponse("Time for registration is up.", status = 400)
 			team = Team(captain = user, contest = contest)
 			team.save()
 			team.members.add(user)
@@ -116,12 +116,12 @@ def admin(request):
 		team.save()
 	if (request.POST and request.POST.get('accept')):
 		try:
-			targetUser = User.objects.get(username = request.POST.get('accept'))
+			targetUser = User.objects.get(id = int(request.POST.get('accept')))
 		except:
 			return HttpResponse("User not found.", status = 400)
 		
-		if datetime.datetime.now() > contest.registerTimeUp:
-			return HttpResponse("Time for register is up.", status = 400)
+		if datetime.datetime.now() > team.contest.registerTimeUp:
+			return HttpResponse("Time for registration is up.", status = 400)
 		
 		if team.members.count() >= team.contest.limitOfMember:
 			return HttpResponse("The team is full.", status = 400)
@@ -130,14 +130,14 @@ def admin(request):
 		
 	if (request.POST and request.POST.get('refuse')):
 		try:
-			targetUser = User.objects.get(username = request.POST.get('refuse'))
+			targetUser = User.objects.get(id = int(request.POST.get('refuse')))
 		except:
 			return HttpResponse("User not found.", status = 400)
 		team.candidates.remove(targetUser)
 			
 	if (request.POST and request.POST.get('dismiss')):
 		try:
-			targetUser = User.objects.get(username = request.POST.get('dismiss'))
+			targetUser = User.objects.get(id = int(request.POST.get('dismiss')))
 		except:
 			return HttpResponse("User not found.", status = 400)
 		team.members.remove(targetUser)
@@ -165,7 +165,7 @@ def apply(request):
 		return HttpResponse("Already in a team now.", status = 400)
 	
 	if datetime.datetime.now() > contest.registerTimeUp:
-		return HttpResponse("Time for register is up.", status = 400)
+		return HttpResponse("Time for registration is up.", status = 400)
 	
 	if team.members.count() >= contest.limitOfMember:
 		return HttpResponse("The team is full.", status = 400)

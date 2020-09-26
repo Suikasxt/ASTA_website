@@ -6,7 +6,7 @@ from mdeditor.fields import MDTextField
 # Create your models here.
 class User(AbstractUser):
 	avatar = models.ImageField(upload_to='avatars', default = 'avatars/default.png')
-	id = models.IntegerField(primary_key=True)
+	studentId = models.IntegerField(default = 0)
 	email = models.CharField(max_length = 60, default = '')
 	name = models.CharField(max_length = 20, default = '')
 	className = models.CharField(max_length = 10, default = '')

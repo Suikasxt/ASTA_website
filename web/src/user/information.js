@@ -3,7 +3,7 @@ import $ from 'jquery';
 import { Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import './information.css';
-import { Upload, Button, message, Descriptions, Icon, Form, Input, Card } from 'antd';
+import { Upload, Button, message, Descriptions, Icon, Form, Input, Card, Result } from 'antd';
 
 const formItemLayout = {
 	labelCol: {
@@ -82,15 +82,20 @@ class Informathion extends Component{
 		});
 	}
 	render(){
-		const { user } = this.props
-		const { getFieldDecorator } = this.props.form
+		const { user } = this.props;
+		const { getFieldDecorator } = this.props.form;
 		if (user == null) {
-			this.props.history.push('/')
 			return (
 				<div id = 'root' >
-					<div id = 'username' > 
-						Please log in.
-					</div>
+					<Result
+						title=<div>Please <Link to="/login">log in</Link> first.</div>
+						extra={
+							<div>
+								This is a page to show your <b>personal information</b>. <br/>
+								You must log in to your account or <Link to="/register">register</Link> a new one.
+							</div>
+						}
+					/>
 				</div>
 			)
 		}
@@ -144,9 +149,8 @@ class Informathion extends Component{
 							)}
 						</Form.Item>
 						<Form.Item label="学号">
-							{getFieldDecorator('id', {
-								initialValue: user.id,
-								rules: [{ required: true, message: 'Please input your ID!' }],
+							{getFieldDecorator('studentId', {
+								initialValue: user.studentId,
 							})(
 								<Input
 									prefix={<Icon type="idcard" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -156,7 +160,6 @@ class Informathion extends Component{
 						<Form.Item label="姓名">
 							{getFieldDecorator('name', {
 								initialValue: user.name,
-								rules: [{ required: true, message: 'Please input your name!' }],
 							})(
 								<Input
 									prefix={<Icon type="contacts" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -166,7 +169,6 @@ class Informathion extends Component{
 						<Form.Item label="班级">
 							{getFieldDecorator('className', {
 								initialValue: user.className,
-								rules: [{ required: true, message: 'Please input your class!' }],
 							})(
 								<Input
 									prefix={<Icon type="team" style={{ color: 'rgba(0,0,0,.25)' }} />}

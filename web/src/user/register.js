@@ -160,9 +160,7 @@ class Register extends Component{
 							)}
 						</Form.Item>
 						<Form.Item label="学号">
-							{getFieldDecorator('id', {
-								rules: [{ required: true, message: 'Please input your ID!' }],
-							})(
+							{getFieldDecorator('studentId')(
 								<Input
 									prefix={<Icon type="idcard" style={{ color: 'rgba(0,0,0,.25)' }} />}
 									placeholder="id"
@@ -170,9 +168,7 @@ class Register extends Component{
 							)}
 						</Form.Item>
 						<Form.Item label="姓名">
-							{getFieldDecorator('name', {
-								rules: [{ required: true, message: 'Please input your name!' }],
-							})(
+							{getFieldDecorator('name')(
 								<Input
 									prefix={<Icon type="contacts" style={{ color: 'rgba(0,0,0,.25)' }} />}
 									placeholder="Name"
@@ -180,9 +176,7 @@ class Register extends Component{
 							)}
 						</Form.Item>
 						<Form.Item label="班级">
-							{getFieldDecorator('className', {
-								rules: [{ required: true, message: 'Please input your class!' }],
-							})(
+							{getFieldDecorator('className')(
 								<Input
 									prefix={<Icon type="team" style={{ color: 'rgba(0,0,0,.25)' }} />}
 									placeholder="Class"

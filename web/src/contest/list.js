@@ -36,9 +36,21 @@ class ListElement extends Component{
 						this.state.list.map((item, index) => {
 							let title = item.name
 							return (
-								<Panel header={item.name} key={index} extra={item.time}>
-									<p dangerouslySetInnerHTML={{ __html: item.introduction}}></p>
-									<Link to={"/contest/" + item.id} style={{display: 'inline'}}>
+								<Panel header={item.name} key={index} extra=<div>
+									{item.register?(
+										<span style={{color:'#3A5FCD'}}>
+											报名进行中
+										</span>
+									):(
+										<span style={{color:'yellow'}}>
+											已结束报名
+										</span>
+									)}
+									&emsp;
+									{item.time}
+								</div>>
+									<p>{item.introduction}</p>
+									<Link to={"/contest/" + item.id + "/home"} style={{display: 'inline'}}>
 										<Button style={{display: 'inline'}}>Enter</Button>
 									</Link>
 								</Panel>

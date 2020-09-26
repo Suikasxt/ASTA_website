@@ -24,7 +24,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEBUG = False
 
 config=ConfigParser(allow_no_value=True)
-config.read(os.path.join(BASE_DIR, 'asta.ini'))
+config.read(os.path.join(BASE_DIR, 'asta.ini'), encoding="utf-8")
 # SECURITY WARNING: keep the secret key used in production secret!
 if DEBUG:
 	SECRET_KEY = '_*qww_o=*v@-+2=02!z6m6(+(me0=2w@a=2thi1w(ol=j^ior!'
@@ -136,9 +136,9 @@ CSRF_COOKIE_SAMESITE = None
 CORS_ALLOW_CREDENTIALS = True
 #SESSION_COOKIE_SAMESITE = 'lax'
 CORS_ORIGIN_WHITELIST = [
-	'http://localhost:3000',
-	'http://localhost:5000',
-	'http://127.0.0.1:3000',
+	'http://localhost:3000/',
+	'http://localhost:5000/',
+	'http://127.0.0.1:3000/',
 	'http://166.111.73.151:5001/',
 	'http://182.92.230.1/',
 	'http://www.thuasta.cn/',
@@ -150,8 +150,8 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 EMAIL_USE_SSL = True
-EMAIL_HOST = 'smtp.163.com'
-EMAIL_PORT = 465
-EMAIL_HOST_USER = 'swm_sxt@163.com'
+EMAIL_HOST = config.get('global', 'EMAIL_HOST')
+EMAIL_PORT = config.get('global', 'EMAIL_PORT')
+EMAIL_HOST_USER = config.get('global', 'EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config.get('global', 'EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = '清华大学自动化系学生科协<swm_sxt@163.com>'
+DEFAULT_FROM_EMAIL = config.get('global', 'DEFAULT_FROM_EMAIL')

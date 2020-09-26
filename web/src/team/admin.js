@@ -54,7 +54,7 @@ class UserList extends Component{
 					)}
 				/>
 				<Column title="Name" dataIndex="name" key="name" />
-				<Column title="ID" dataIndex="id" key="id" />
+				<Column title="ID" dataIndex="studentId" key="id" />
 				<Column title="Class" dataIndex="className" key="className" />
 				<Column
 					title="Action"
@@ -256,7 +256,7 @@ class Admin extends Component{
 				<Card bordered={false} title = 
 					<div
 						align='center'
-						style={{fontSize: 22, fontWeight:600}}
+						style={{fontSize: 23, fontWeight:700}}
 					>
 						{this.state.team.name}
 					</div>
@@ -315,7 +315,7 @@ class Admin extends Component{
 											<UserShow username = {record.username} avatar = {record.avatar}/>
 										</div>
 									)}
-									onConfirm={() => this.sendManage({'dismiss': record.username}, this.state.team.id)}
+									onConfirm={() => this.sendManage({'dismiss': record.id}, this.state.team.id)}
 									okText="Yes"
 									cancelText="No"
 								>
@@ -335,7 +335,7 @@ class Admin extends Component{
 											<UserShow username = {record.username} avatar = {record.avatar}/>
 										</div>
 									)}
-									onConfirm={() => this.sendManage({'accept': record.username}, this.state.team.id)}
+									onConfirm={() => this.sendManage({'accept': record.id}, this.state.team.id)}
 									okText="Yes"
 									cancelText="No"
 								>
@@ -350,7 +350,7 @@ class Admin extends Component{
 											<UserShow username = {record.username} avatar = {record.avatar}/>
 										</div>
 									)}
-									onConfirm={() => this.sendManage({'refuse': record.username}, this.state.team.id)}
+									onConfirm={() => this.sendManage({'refuse': record.id}, this.state.team.id)}
 									okText="Yes"
 									cancelText="No"
 								>

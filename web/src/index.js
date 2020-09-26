@@ -1,6 +1,6 @@
 import './config';
 import React from 'react';
-import { HashRouter as Router, Link, Route } from 'react-router-dom';
+import { HashRouter as Router, Link, Route, Redirect } from 'react-router-dom';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
 import './index.css';
@@ -186,6 +186,8 @@ class App extends React.Component {
 									logout={this.logout.bind(this)}
 								{...props}/>}
 							/>
+							
+							
 							<Route path="/contest" exact render={props =>
 								<ContestList
 									user={this.state.user}
@@ -198,6 +200,14 @@ class App extends React.Component {
 									{...props}
 								/>}
 							/>
+							<Route path="/contest/:id/:tab" exact render={props =>
+								<ContestDetail
+									user={this.state.user}
+									{...props}
+								/>}
+							/>
+							
+							
 							<Route path="/blog" exact render={props =>
 								<BlogList
 									user={this.state.user}

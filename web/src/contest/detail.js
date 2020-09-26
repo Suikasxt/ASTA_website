@@ -14,10 +14,10 @@ const { TabPane } = Tabs;
 
 class Detail extends Component{
 	state = {
-		activeKey: 'home'
 	}
 	changeTabKey = (key) => {
-		this.setState({activeKey: key})
+		const { id } = this.props.match.params;
+		this.props.history.push('/contest/' + id + '/' + key);
 	}
 	getInfo = (id = this.props.match.params.id) => {
 		let url = global.constants.server + 'contest/'
@@ -49,17 +49,20 @@ class Detail extends Component{
 				<Loading/>
 			)
 		}
-		const { user } = this.props
-		const { id } = this.props.match.params
+		const { user } = this.props;
+		const { id, tab } = this.props.match.params;
+		let team = this.state.data;
+		let key = 'home';
+		if (tab) key = tab;
 		return (
 			<div id = "root">
 			
-				<div className='title'> {this.state.data.name} </div>
-				<Tabs activeKey={this.state.activeKey} onTabClick={this.tabChage}>
+				<div className='title'> {team.name} </div>
+				<Tabs activeKey={key} onTabClick={this.tabChage}>
 					<TabPane tab="Home" key="home">
 						<div style={{marginLeft: 10}}>
 							<MarkdownView
-								source={this.state.data.detail}
+								source={team.detail}
 							/>
 						</div>
 					</TabPane>
@@ -68,7 +71,7 @@ class Detail extends Component{
 						<BlogList
 							user={this.props.user}
 							padding={10}
-							tag={this.state.data.name}
+							tag={team.name}
 							author='ASTA'
 							{...this.props}
 						/>

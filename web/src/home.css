@@ -1,10 +1,10 @@
-.container {
+.markdownContainer {
 	position: relative;
 	width: 94%;
 	margin-left: 3%;
 	margin-top: 20px;
 }
-.logo_inside{
+.logo_inside {
 	width: 150px;
 	margin-left: 20px;
 	margin-top: 20px;

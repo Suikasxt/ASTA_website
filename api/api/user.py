@@ -28,32 +28,32 @@ token_confirm = TokenCtl(settings.SECRET_KEY)
 
 def sendToken(request):
 	if (request.GET and request.GET.get('email')):
-		try:
-			email = request.GET.get('email')
-			token = token_confirm.generate_validate_token(email)
+		#try:
+		email = request.GET.get('email')
+		token = token_confirm.generate_validate_token(email)
+		
+		content = "Your token is:<br/><b>{}</b><br/>Thank you for registering.".format(token)
+		send_mail(
+			'Welcome to ASTA',
+			'Token from ASTA',
+			None,
+			[email],
+			html_message = content,
+		)
+		
+		data = Token.objects.filter(email = email)
+		if (len(data) > 0):
+			data = data[0]
+			data.key = token
+			data.updateTime = timezone.now()
+			data.save()
+		else:
+			data = Token(email = email, key = token)
+			data.save()
 			
-			content = "Your token is:<br/><b>{}</b><br/>Thank you for registering.".format(token)
-			send_mail(
-				'Welcome to ASTA',
-				'Token from ASTA',
-				None,
-				[email],
-				html_message = content,
-			)
-			
-			data = Token.objects.filter(email = email)
-			if (len(data) > 0):
-				data = data[0]
-				data.key = token
-				data.updateTime = timezone.now()
-				data.save()
-			else:
-				data = Token(email = email, key = token)
-				data.save()
-				
-			return HttpResponse("Send successfully.", status = 200)
-		except:
-			return HttpResponse("Failed sending token.", status = 400)
+		return HttpResponse("Send successfully.", status = 200)
+		#except:
+		#	return HttpResponse("Failed sending token.", status = 400)
 	else:
 		return HttpResponse("Email missing.", status = 400)
 		
@@ -77,27 +77,27 @@ def register(request):
 		return HttpResponse("Username missing.", status = 400)
 	if (request.POST.get('password') == None):
 		return HttpResponse("Password missing.", status = 400)
-	if (request.POST.get('id') == None):
-		return HttpResponse("ID missing.", status = 400)
-	if (request.POST.get('name') == None):
-		return HttpResponse("Name missing.", status = 400)
-	if (request.POST.get('className') == None):
-		return HttpResponse("ClassName missing.", status = 400)
 	if (request.POST.get('token') == None):
 		return HttpResponse("Token missing.", status = 400)
 	
-	
-	try:
-		id = int(request.POST.get('id'))
-	except:
-		return HttpResponse("ID should be an integer.", status = 400)
+	studentId = 0
+	if (request.POST.get('studentId')):
+		try:
+			studentId = int(request.POST.get('studentId'))
+		except:
+			return HttpResponse("ID should be an integer.", status = 400)
+			
+	className = ''
+	if (request.POST.get('className')):
+		className = request.POST.get('className')
+	name = ''
+	if (request.POST.get('name')):
+		name = request.POST.get('name')
 		
 		
 	email = request.POST.get('email')
 	username = request.POST.get('username')
 	password = request.POST.get('password')
-	name = request.POST.get('name')
-	className = request.POST.get('className')
 	token = request.POST.get('token')
 	
 	if (not tokenComfirm(email, token)):
@@ -106,10 +106,8 @@ def register(request):
 		return HttpResponse("Email exists.", status = 400)
 	if (len(User.objects.filter(username = username)) > 0):
 		return HttpResponse("Username exists.", status = 400)
-	if (len(User.objects.filter(id = id)) > 0):
-		return HttpResponse("ID exists.", status = 400)
 	
-	user = User.objects.create_user(username=username, password=password, email = email, id = id, name = name, className = className)
+	user = User.objects.create_user(username=username, password=password, email = email, studentId = studentId, name = name, className = className)
 	return HttpResponse("Register successfully.")
 
 
@@ -143,7 +141,9 @@ def getInfo(request):
 			
 	user = User.objects.filter(username = username)
 	if (len(user) == 1):
-		return HttpResponse(tools.userToJson(user[0]), content_type = 'application/json', status = 200)
+		response = HttpResponse(tools.userToJson(user[0]), content_type = 'application/json', status = 200)
+		response['Cache-Control'] = 'public, max-age=600'
+		return response
 	else:
 		return HttpResponse("User not found.", status = 400)
 
@@ -162,29 +162,38 @@ def modify(request):
 		return HttpResponse("Please log in.", status = 400)
 	
 	user = request.user
-	if (request.POST and request.POST.get('username') and request.POST.get('username') != user.username):
-		tmp = User.objects.filter(username = request.POST.get('username'))
-		if (len(tmp) > 0):
-			return HttpResponse("username already exists.", status = 400)
-		user.username = request.POST.get('username')
-		user.save()
-	if (request.POST and request.POST.get('name')):
-		user.name = request.POST.get('name')
-		user.save()
-	if (request.POST and request.POST.get('className')):
-		user.className = request.POST.get('className')
-		user.save()
-	if (request.POST and request.POST.get('id')):
-		user.id = int(request.POST.get('id'))
-		user.save()
-		
-		
+	
+	
 	if (request.FILES and request.FILES.get('avatar')):
 		avatar = request.FILES.get('avatar')
 		if (avatar.size >= 2*1024*1024):
 			return HttpResponse("Avatar should be less than 2MB.", status = 400)
 		user.avatar = avatar
 		user.save()
+		return HttpResponse('media/' + str(user.avatar), status = 200)
+		
+	username = user.username
+	name = user.name
+	className = user.className
+	studentId = user.studentId
+	if (request.POST and request.POST.get('username') != None and request.POST.get('username') != user.username):
+		tmp = User.objects.filter(username = request.POST.get('username'))
+		if (len(tmp) > 0):
+			return HttpResponse("username already exists.", status = 400)
+		username = request.POST.get('username')
+	if (request.POST and request.POST.get('name') != None):
+		name = request.POST.get('name')
+	if (request.POST and request.POST.get('className') != None):
+		className = request.POST.get('className')
+	if (request.POST and request.POST.get('studentId') != None):
+		studentId = int(request.POST.get('studentId'))
+	user.username = username
+	user.name = name
+	user.className = className
+	user.studentId = studentId
+	user.save()
+		
+		
 	
 	return HttpResponse("Modify successfully.", status = 200)
 
