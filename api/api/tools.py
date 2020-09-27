@@ -1,6 +1,8 @@
 from database.models import User, Team, Blog, Tag
 import json
 
+#一些简单的工具，主要是把类转成字典或者json字符串的工具
+
 def userToDict(user, detail = False):
 	result = {}
 	if detail:

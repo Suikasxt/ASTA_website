@@ -124,6 +124,7 @@ class App extends React.Component {
 	}
 
 	render() {
+		console.log(this.state)
 		let user = this.getUserMenu()
 		
 		return (

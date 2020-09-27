@@ -83,6 +83,12 @@ class Admin extends Component{
 			},
 			async: true,
 			success: function (result) {
+				for (let i = 0; i < result.members.length; i++){
+					result.members[i].key = result.members[i].id;
+				}
+				for (let i = 0; i < result.candidates.length; i++){
+					result.candidates[i].key = result.candidates[i].id;
+				}
 				this.setState({team: result})
 			}.bind(this),
 			error: function (result) {
@@ -114,6 +120,13 @@ class Admin extends Component{
 		this.setState({createTeamFormVisible: true})
 	}
 	componentWillMount(){
+		if (this.props.contestId && this.props.user){
+			this.getTeamInfo(this.props.user.username, this.props.contestId)
+		}else{
+			this.state.team = null
+		}
+	}
+	componentWillReceiveProps(){
 		if (this.props.contestId && this.props.user){
 			this.getTeamInfo(this.props.user.username, this.props.contestId)
 		}else{

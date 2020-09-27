@@ -1,0 +1,4 @@
+.memberContainer{
+	display: flex;
+	flex-direction: row;
+}

@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import Loading from '../loading.js'
 import { message, Button, Card, Col, Row } from 'antd';
 import UserShow from '../user/show.js'
+import './list.css'
 
 
 class List extends Component{
@@ -64,7 +65,7 @@ class List extends Component{
 					this.state.list.map((item, index) => {
 						return (
 							<Col span={8} key={item.id}>
-								<Card title={item.name} key={item.id} bodyStyle={{ minHeight: 150, overflow: "auto" }} extra={
+								<Card title={item.name} key={item.id} bodyStyle={{ minHeight: 200, overflow: "auto" }} extra={
 									item.application?(
 										<Button type="danger" onClick={()=>this.sendApplication(item.id, true)}>Cancel</Button>
 									):(
@@ -82,17 +83,22 @@ class List extends Component{
 												username = {item.captain}
 											/>
 										</div>
-										<div style = {{marginBottom: 15}}>
-											<b>Members</b> :&nbsp;
-											{item.members.map((user, index) => {
-												return (
-													<UserShow style={{marginLeft: 2}} key={user.username}
-														mode = 'mini'
-														username = {user.username}
-														avatar = {user.avatar}
-													/>
-												)
-											})}
+										<div className="memberContainer">
+											<div>
+												<b>Members</b> : &nbsp;
+											</div>
+											<div>
+												{item.members.map((user, index) => {
+													return (
+														<div>
+															<UserShow style={{marginLeft: 2}} key={user.username}
+																username = {user.username}
+																avatar = {user.avatar}
+															/>
+														</div>
+													)
+												})}
+											</div>
 										</div>
 									</div>
 								</Card>

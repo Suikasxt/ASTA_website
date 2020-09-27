@@ -9,6 +9,7 @@ import django.utils.timezone as timezone
 import datetime
 import base64
 
+#token模块是网上抄来的...
 class TokenCtl:
 	def __init__(self, security_key):
 		self.security_key = security_key
@@ -28,32 +29,32 @@ token_confirm = TokenCtl(settings.SECRET_KEY)
 
 def sendToken(request):
 	if (request.GET and request.GET.get('email')):
-		#try:
-		email = request.GET.get('email')
-		token = token_confirm.generate_validate_token(email)
-		
-		content = "Your token is:<br/><b>{}</b><br/>Thank you for registering.".format(token)
-		send_mail(
-			'Welcome to ASTA',
-			'Token from ASTA',
-			None,
-			[email],
-			html_message = content,
-		)
-		
-		data = Token.objects.filter(email = email)
-		if (len(data) > 0):
-			data = data[0]
-			data.key = token
-			data.updateTime = timezone.now()
-			data.save()
-		else:
-			data = Token(email = email, key = token)
-			data.save()
+		try:
+			email = request.GET.get('email')
+			token = token_confirm.generate_validate_token(email)
 			
-		return HttpResponse("Send successfully.", status = 200)
-		#except:
-		#	return HttpResponse("Failed sending token.", status = 400)
+			content = "Your token is:<br/><b>{}</b><br/>Thank you for registering.".format(token)
+			send_mail(
+				'Welcome to ASTA',
+				'Token from ASTA',
+				None,
+				[email],
+				html_message = content,
+			)
+			
+			data = Token.objects.filter(email = email)
+			if (len(data) > 0):
+				data = data[0]
+				data.key = token
+				data.updateTime = timezone.now()
+				data.save()
+			else:
+				data = Token(email = email, key = token)
+				data.save()
+				
+			return HttpResponse("Send successfully.", status = 200)
+		except:
+			return HttpResponse("Failed sending token.", status = 400)
 	else:
 		return HttpResponse("Email missing.", status = 400)
 		
@@ -67,7 +68,7 @@ def tokenComfirm(email, token):
 			return True
 	return False
 
-	
+#用户系统是跟django自带用户系统绑定的，所以之间用它的api即可
 def register(request):
 	if (request.POST == None):
 		return HttpResponse("Only POST is allowed.", status = 400)
@@ -142,6 +143,7 @@ def getInfo(request):
 	user = User.objects.filter(username = username)
 	if (len(user) == 1):
 		response = HttpResponse(tools.userToJson(user[0]), content_type = 'application/json', status = 200)
+		#缓存控制，不然这个信息容易请求很多次，虽然我也不知道有没有生效
 		response['Cache-Control'] = 'public, max-age=600'
 		return response
 	else:
@@ -158,6 +160,7 @@ def logout(request):
 		return response
 		
 def modify(request):
+	#修改个人信息，头像上传会返回新头像的url
 	if (not request.user.is_authenticated):
 		return HttpResponse("Please log in.", status = 400)
 	
@@ -198,6 +201,7 @@ def modify(request):
 	return HttpResponse("Modify successfully.", status = 200)
 
 def resetPassword(request):
+	#检查token，然后重置密码
 	if (request.POST == None):
 		return HttpResponse("Only POST is allowed.", status = 400)
 	if (request.POST.get('email') == None):

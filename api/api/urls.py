@@ -22,27 +22,72 @@ from api import settings
 from api import user, contest, blog, team
 
 urlpatterns = [
+	#mdeditor编辑器用的，目前只发现上传图片有用到
 	url(r'mdeditor/', include('mdeditor.urls')),
+	
+	#媒体文件，多为用户上传的
 	url(r'^media/(?P<path>.*)$', serve, {"document_root": settings.MEDIA_ROOT}),
+	
+	#静态文件，多为开发者自己整的
 	url(r'^static/(?P<path>.*)$', serve, {"document_root": settings.STATIC_ROOT}),
+	
+	#管理页面
 	path('admin/', admin.site.urls),
+	
+	#注册
 	path('register/', user.register),
+	
+	#登录
 	path('login/', user.login),
+	
+	#登出
 	path('logout/', user.logout),
+	
+	#获取用户信息
 	path('user/', user.getInfo),
+	
+	#发送token到邮箱
 	path('sendToken/', user.sendToken),
+	
+	#用户修改个人信息
 	path('modify/', user.modify),
+	
+	#重置密码
 	path('resetPassword/', user.resetPassword),
+	
+	#获取单个比赛详细信息
 	path('contest/', contest.detail),
+	
+	#获取比赛列表
 	path('contest/list/', contest.list),
+	
+	#获取单个博客详细信息
 	path('blog/', blog.detail),
+	
+	#获取博客列表
 	path('blog/list/', blog.list),
+	
+	#发布或修改博客
 	path('blog/edit/', blog.edit),
+	
+	#删除博客
 	path('blog/delete/', blog.delete),
+	
+	#发布评论
 	path('comment/add/', blog.addComment),
+	
+	#获取评论列表
 	path('comment/list/', blog.commentList),
+	
+	#获取单个队伍详细信息
 	path('team/', team.detail),
+	
+	#获取队伍列表
 	path('team/list/', team.list),
+	
+	#管理队伍
 	path('team/admin/', team.admin),
+	
+	#申请加入队伍
 	path('team/apply/', team.apply),
 ]

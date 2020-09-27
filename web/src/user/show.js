@@ -3,6 +3,7 @@ import $ from 'jquery';
 import { withRouter, Link } from 'react-router-dom';
 import React, { Component } from 'react';
 import { message, Avatar, Tooltip } from 'antd';
+import './show.css'
 
 class UserShow extends Component{
 	state = {
@@ -56,7 +57,7 @@ class UserShow extends Component{
 				return (
 					<span>
 						<Avatar size={24} src = {global.constants.server + user.avatar} />
-						{user.username}
+						<span className='username'>{user.username}</span>
 					</span>
 				)
 			}

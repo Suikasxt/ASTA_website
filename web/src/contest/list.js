@@ -42,7 +42,7 @@ class ListElement extends Component{
 											报名进行中
 										</span>
 									):(
-										<span style={{color:'yellow'}}>
+										<span style={{color:'grey'}}>
 											已结束报名
 										</span>
 									)}
