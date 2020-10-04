@@ -102,10 +102,11 @@ def admin(request):
 				return HttpResponse("Contest missing.", status = 400)
 			if datetime.datetime.now() > contest.registerTimeUp:
 				return HttpResponse("Time for registration is up.", status = 400)
-			if len(tools.getTeamByUserContest(request.GET.get('username'), contest.id))>0:
+			
+			if len(tools.getTeamByUserContest(request.user.username, contest.id))>0:
 				return HttpResponse("Already in a team now.", status = 400)
 				
-			team = Team(captain = user, contest = contest)
+			team = Team(captain = user, contest = contest, name = request.POST.get('name'))
 			team.save()
 			team.members.add(user)
 		else:
@@ -156,6 +157,8 @@ def admin(request):
 	
 	#踢出队伍
 	if (request.POST and request.POST.get('dismiss')):
+		if datetime.datetime.now() > team.contest.registerTimeUp:
+			return HttpResponse("Time for registration is up.", status = 400)
 		try:
 			targetUser = User.objects.get(id = int(request.POST.get('dismiss')))
 		except:
@@ -164,6 +167,8 @@ def admin(request):
 	
 	#解散队伍
 	if (request.POST and request.POST.get('disband')):
+		if datetime.datetime.now() > team.contest.registerTimeUp:
+			return HttpResponse("Time for registration is up.", status = 400)
 		team.delete()
 		
 	return HttpResponse('Change successfully')
