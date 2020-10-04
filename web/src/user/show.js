@@ -56,7 +56,7 @@ class UserShow extends Component{
 			}else{
 				return (
 					<span>
-						<Avatar size={24} src = {global.constants.server + user.avatar} />
+						<Avatar size={32} src = {global.constants.server + user.avatar} />
 						<span className='username'>{user.username}</span>
 					</span>
 				)
