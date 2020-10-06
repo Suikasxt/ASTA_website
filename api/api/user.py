@@ -132,22 +132,27 @@ def login(request):
 		
 			
 def getInfo(request):
-	if (request.GET and request.GET.get('username')):
-		username = request.GET.get('username')
+	if (request.GET and request.GET.get('id')):
+		try:
+			user = User.objects.get(id = int(request.GET.get('id')))
+		except:
+			return HttpResponse("User not found.", status = 400)
+	elif (request.GET and request.GET.get('username')):
+		try:
+			user = User.objects.get(username = request.GET.get('username'))
+		except:
+			return HttpResponse("User not found.", status = 400)
+			
 	else:
 		if (request.user.is_authenticated):
 			return HttpResponse(tools.userToJson(request.user, True), content_type = 'application/json', status = 200)
 		else:
 			return HttpResponse("Data missing.", status = 400)
 			
-	user = User.objects.filter(username = username)
-	if (len(user) == 1):
-		response = HttpResponse(tools.userToJson(user[0]), content_type = 'application/json', status = 200)
-		#缓存控制，不然这个信息容易请求很多次，虽然我也不知道有没有生效
-		response['Cache-Control'] = 'public, max-age=600'
-		return response
-	else:
-		return HttpResponse("User not found.", status = 400)
+	response = HttpResponse(tools.userToJson(user), content_type = 'application/json', status = 200)
+	#缓存控制，不然这个信息容易请求很多次，虽然我也不知道有没有生效
+	response['Cache-Control'] = 'public, max-age=600'
+	return response
 
 def logout(request):
 	try:

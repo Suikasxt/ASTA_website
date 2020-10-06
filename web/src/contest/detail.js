@@ -40,6 +40,10 @@ class Detail extends Component{
 	componentWillMount(){
 		this.getInfo()
 	}
+	componentWillReceiveProps(nextProps){
+		this.props = nextProps
+		this.getInfo()
+	}
 	tabChage = (key) => {
 		this.changeTabKey(key)
 	}
@@ -56,7 +60,6 @@ class Detail extends Component{
 		if (tab) key = tab;
 		return (
 			<div id = "root">
-			
 				<div className='title'> {team.name} </div>
 				<Tabs activeKey={key} onTabClick={this.tabChage}>
 					<TabPane tab="Home" key="home">

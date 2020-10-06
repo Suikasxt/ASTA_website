@@ -1,7 +1,13 @@
-from database.models import User, Team, Blog, Tag
+from database.models import User, Team, Blog, Tag, RsrvProject, RsrvTimeAvailable, RsrvTimeUsed
 import json
+import datetime
 
 #一些简单的工具，主要是把类转成字典或者json字符串的工具
+
+def timestamp2datetime(dateTime):
+	return datetime.datetime.fromtimestamp(dateTime/1000)
+def datetime2timestamp(dateTime):
+	return int(dateTime*1000)
 
 def userToDict(user, detail = False):
 	result = {}
@@ -20,6 +26,31 @@ def userToDict(user, detail = False):
 def userToJson(user, detail = False):
 	return json.dumps(userToDict(user, detail))
 	
+
+def usedTimeToDict(usedTime):
+	result = {}
+	result['id'] = usedTime.id
+	result['startTime'] = datetime2timestamp(usedTime.startTime.timestamp())
+	result['endTime'] = datetime2timestamp(usedTime.endTime.timestamp())
+	result['user'] = usedTime.user.id
+	return result
+
+def avaiTimeToDict(avaiTime):
+	result = {}
+	result['id'] = avaiTime.id
+	result['startTime'] = datetime2timestamp(avaiTime.startTime.timestamp())
+	result['endTime'] = datetime2timestamp(avaiTime.endTime.timestamp())
+	return result
+	
+def rsrvProjectToDict(project, detail = False):
+	result = {}
+	result['id'] = project.id
+	result['name'] = project.name
+	if detail:
+		result['introduction'] = project.intro
+	if project.contest:
+		result['contest'] = project.contest.id
+	return result
 	
 def teamToDict(team, detail = False):
 	result = {'id': team.id, 'name': team.name, 'introduction': team.introduction, 'captain': team.captain.username, 'members': [], 'candidates': []}
@@ -51,5 +82,7 @@ def blogToDict(blog):
 		result['tags'].append(tag.name)
 	return result
 
-def getTeamByUserContest(username, contestId):
-	return User.objects.get(username = username).belong.filter(contest__id = contestId)
+def getTeamByUsernameContestid(username, contestID):
+	return User.objects.get(username = username).belong.filter(contest__id = contestID)
+def getTeamByUserContest(user, contest):
+	return user.belong.filter(contest = contest)

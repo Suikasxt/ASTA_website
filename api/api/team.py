@@ -11,7 +11,7 @@ def list(request):
 	#队伍列表，给了比赛、用户的情况下只给出属于这个比赛、这个用户加入了的队伍
 	if (request.GET and request.GET.get('contest') and request.GET.get('username')):
 		try:
-			list = tools.getTeamByUserContest(request.GET.get('username'), int(request.GET.get('contest')))
+			list = tools.getTeamByUsernameContestid(request.GET.get('username'), int(request.GET.get('contest')))
 		except:
 			return HttpResponse("Data error.", status = 400)
 			
@@ -59,7 +59,7 @@ def detail(request):
 			id = int(request.GET.get('contest'))
 		except:
 			return HttpResponse("Contest id error.", status = 400)
-		list = tools.getTeamByUserContest(request.GET.get('username'), id)
+		list = tools.getTeamByUsernameContestid(request.GET.get('username'), id)
 		if (len(list) > 0):
 			item = list[0]
 		print(item)
@@ -103,7 +103,7 @@ def admin(request):
 			if datetime.datetime.now() > contest.registerTimeUp:
 				return HttpResponse("Time for registration is up.", status = 400)
 			
-			if len(tools.getTeamByUserContest(request.user.username, contest.id))>0:
+			if len(tools.getTeamByUserContest(request.user, contest))>0:
 				return HttpResponse("Already in a team now.", status = 400)
 				
 			team = Team(captain = user, contest = contest, name = request.POST.get('name'))
@@ -188,7 +188,7 @@ def apply(request):
 	
 	
 	contest = team.contest
-	if (len(tools.getTeamByUserContest(request.user.username, contest.id))):
+	if (len(tools.getTeamByUserContest(request.user, contest))):
 		return HttpResponse("Already in a team now.", status = 400)
 	
 	if datetime.datetime.now() > contest.registerTimeUp:

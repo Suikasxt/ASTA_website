@@ -7,9 +7,9 @@ from mdeditor.fields import MDTextField
 class User(AbstractUser):
 	avatar = models.ImageField(upload_to='avatars', default = 'avatars/default.png')
 	studentId = models.IntegerField(default = 0)
-	email = models.CharField(max_length = 60, default = '')
-	name = models.CharField(max_length = 20, default = '')
-	className = models.CharField(max_length = 10, default = '')
+	email = models.CharField(max_length = 60, default = '', blank=True)
+	name = models.CharField(max_length = 20, default = '', blank=True)
+	className = models.CharField(max_length = 10, default = '', blank=True)
 class Token(models.Model):
 	email = models.CharField(max_length = 60, default = '', primary_key=True)
 	key = models.CharField(max_length = 1024, default = '')
@@ -55,3 +55,20 @@ class Comment(models.Model):
 	timestamp = models.DateTimeField(auto_now_add = True)
 	author = models.ForeignKey(to = User, on_delete = models.SET_NULL, null = True)
 	blog = models.ForeignKey(to = Blog, on_delete = models.SET_NULL, null = True)
+
+#预约系统
+class RsrvProject(models.Model):
+	contest = models.ForeignKey(to = Contest, on_delete = models.SET_NULL, null = True, blank = True)
+	name = models.CharField(max_length = 50, default = '')
+	intro = MDTextField(blank = True)
+
+class RsrvTimeAvailable(models.Model):
+	project = models.ForeignKey(to = RsrvProject, on_delete = models.SET_NULL, null = True)
+	startTime = models.DateTimeField()
+	endTime = models.DateTimeField()
+
+class RsrvTimeUsed(models.Model):
+	startTime = models.DateTimeField()
+	endTime = models.DateTimeField()
+	availableTime = models.ForeignKey(to = RsrvTimeAvailable, on_delete = models.SET_NULL, null = True)
+	user = models.ForeignKey(to = User, on_delete = models.SET_NULL, null = True)

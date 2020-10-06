@@ -19,6 +19,8 @@ import BlogDetail from './blog/detail.js';
 import BlogEditor from './blog/edit.js';
 import TeamList from './team/list.js';
 import TeamAdmin from './team/admin.js';
+import ReservationList from './reservation/list.js';
+import ReservationDetail from './reservation/detail.js';
 import ASTA_logo from './assets/logo_1.jpg';
 
 const { Header, Content, Footer, Sider } = Layout;
@@ -36,7 +38,6 @@ class App extends React.Component {
 	}
 	
 	onCollapse = collapsed => {
-		console.log(collapsed);
 		this.setState({ collapsed });
 	}
 	
@@ -65,6 +66,7 @@ class App extends React.Component {
 			async: true,
 			success: function (result) {
 				if (result.id !== undefined && result !== this.state.user){
+					console.log(result);
 					this.setState({user: result});
 				}
 			}.bind(this),
@@ -124,7 +126,6 @@ class App extends React.Component {
 	}
 
 	render() {
-		console.log(this.state)
 		let user = this.getUserMenu()
 		
 		return (
@@ -152,6 +153,12 @@ class App extends React.Component {
 								<Link to="/blog">
 									<Icon type="read" />
 									<span>Blog</span>
+								</Link>
+							</Menu.Item>
+							<Menu.Item key="Reservation">
+								<Link to="/reservation">
+									<Icon type="clock-circle" />
+									<span>Reservation</span>
 								</Link>
 							</Menu.Item>
 						</Menu>
@@ -235,6 +242,17 @@ class App extends React.Component {
 							/>
 							<Route path="/team" exact render={props =>
 								<TeamList
+									user={this.state.user}
+									{...props}
+								/>}
+							/>
+							<Route path="/reservation" exact render={props =>
+								<ReservationList
+									{...props} 
+								/>}
+							/>
+							<Route path="/reservation/:id" exact render={props =>
+								<ReservationDetail
 									user={this.state.user}
 									{...props}
 								/>}

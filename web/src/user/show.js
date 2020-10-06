@@ -8,28 +8,33 @@ import './show.css'
 class UserShow extends Component{
 	state = {
 	}
-	updateUser = (data) => {
-		if (data.username != null){
-			if (data.avatar != null){
-				this.setState({user: {username: data.username, avatar: data.avatar}})
-				return
-			}
-			let url = global.constants.server + 'user/'
-			$.get({
-				url: url,
-				data: {username: data.username},
-				crossDomain: true,
-				xhrFields: {
-					withCredentials: true
-				},
-				success: function (result) {
-					this.setState({user: result})
-				}.bind(this),
-				error: function (result) {
-					message.error(result.responseText)
-				}.bind(this),
-			});
+	updateUser = (userData) => {
+		if (userData.avatar != null && userData.username != null){
+			this.setState({user: {username: userData.username, avatar: userData.avatar}})
+			return
 		}
+		let data = {};
+		if (userData.id != null){
+			data.id = userData.id;
+		}
+		if (userData.username != null){
+			data.username = userData.username;
+		}
+		let url = global.constants.server + 'user/';
+		$.get({
+			url: url,
+			data: data,
+			crossDomain: true,
+			xhrFields: {
+				withCredentials: true
+			},
+			success: function (result) {
+				this.setState({user: result})
+			}.bind(this),
+			error: function (result) {
+				message.error(result.responseText)
+			}.bind(this),
+		});
 	}
 	componentWillMount(){
 		this.updateUser(this.props)

@@ -4,8 +4,8 @@ import $ from 'jquery';
 import React, { Component } from 'react';
 import Loading from '../loading.js'
 import { message, Button, Card, Col, Row } from 'antd';
-import UserShow from '../user/show.js'
-import './list.css'
+import UserShow from '../user/show.js';
+import './list.css';
 
 
 class List extends Component{
@@ -31,7 +31,7 @@ class List extends Component{
 		})
 	}
 	componentWillMount(){
-		this.getList()
+		this.getList();
 	}
 	sendApplication = (id, cancel = false) => {
 		let url = global.constants.server + 'team/apply/'
@@ -60,12 +60,12 @@ class List extends Component{
 		}
 		return (
 			<div  id = "root"  style = {{padding: this.props.padding ? this.props.padding : 60}}>
-				<Row gutter={16}>
+				<Row type="flex" gutter={16}>
 				{
 					this.state.list.map((item, index) => {
 						return (
 							<Col span={8} key={item.id}>
-								<Card title={item.name} key={item.id} bodyStyle={{ minHeight: 200, overflow: "auto" }} extra={
+								<Card title={item.name} key={item.id} bodyStyle={{ minHeight: 150, overflow: "auto", }} extra={
 									item.application?(
 										<Button type="danger" onClick={()=>this.sendApplication(item.id, true)}>Cancel</Button>
 									):(
