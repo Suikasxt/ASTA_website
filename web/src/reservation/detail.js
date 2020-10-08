@@ -318,6 +318,8 @@ class TimeShow extends Component{
 			}
 		}
 		
+		let avaiCount = 0;
+		let usedCount = 0;
 		for (let i = 0; i < dayNumber; i++){
 			let DateNow = new Date(startDate);
 			DateNow.setDate(DateNow.getDate()+i);
@@ -352,7 +354,14 @@ class TimeShow extends Component{
 					itemEndTime = endTime;
 				}
 				
-				item.available.push({id:available[j].id, st: new Date(itemStartTime - DateNow), et: new Date(itemEndTime - DateNow), title: title});
+				item.available.push({
+					index: avaiCount,
+					id:available[j].id,
+					st: new Date(itemStartTime - DateNow),
+					et: new Date(itemEndTime - DateNow),
+					title: title
+				});
+				avaiCount++;
 			}
 			for (let j = 0; j < m; j++){
 				let itemStartTime = new Date(used[j].startTime);
@@ -373,8 +382,15 @@ class TimeShow extends Component{
 				if (itemEndTime > endTime){
 					itemEndTime = endTime;
 				}
-				
-				item.used.push({id: used[j].id, st: new Date(itemStartTime - DateNow), et: new Date(itemEndTime - DateNow), user: used[j].user, title: title});
+				item.used.push({
+					index: usedCount,
+					id: used[j].id,
+					st: new Date(itemStartTime - DateNow),
+					et: new Date(itemEndTime - DateNow),
+					user: used[j].user,
+					title: title
+				});
+				usedCount++;
 			}
 			timeData[i] = item;
 		}
@@ -573,26 +589,26 @@ class TimeShow extends Component{
 														this.moveState = 2;
 														this.timeStartRecord = timeNow;
 														this.dateNowRecord = dayItem.detailDate;
-														this.currentIndex = index;
+														this.currentIndex = item.index;
 														this.currentAvaiItem = item;
 														//()=>this.showForm(getDateString(item.st), getTimeString(item.st), getDateString(item.et), getTimeString(item.et))
 													}}
-													ref={(ref)=>this.timeAvai[index]=ref}
+													ref={(ref)=>this.timeAvai[item.index]=ref}
 													onPointerMove = {(e)=>{
 														let oneDayTime = getOneDayTime();
 														let timeNow = this.getTimeTip(e, item);
 														this.timeEndRecord = timeNow;
 														let percent = timeNow.getTime() / oneDayTime;
 														if (this.moveState == 0){
-															this.timeBlock[index].style.display = 'flex';
-															this.timeBlock[index].style.height = '1px';
-															this.timeBlock[index].style.top = ((percent - this.state.startTime.getTime() / oneDayTime) / ((this.state.endTime - this.state.startTime) / oneDayTime) * this.timelineHeight - this.timeAvai[index].offsetTop) + 'px';
-															this.timeTip[index].innerHTML = getTimeString(timeNow, true, true, true, this.timeSpaceNumber>24*60);
+															this.timeBlock[item.index].style.display = 'flex';
+															this.timeBlock[item.index].style.height = '1px';
+															this.timeBlock[item.index].style.top = ((percent - this.state.startTime.getTime() / oneDayTime) / ((this.state.endTime - this.state.startTime) / oneDayTime) * this.timelineHeight - this.timeAvai[item.index].offsetTop) + 'px';
+															this.timeTip[item.index].innerHTML = getTimeString(timeNow, true, true, true, this.timeSpaceNumber>24*60);
 														}
 													}}
 													onPointerLeave = {(e)=>{
 														if (this.moveState != 2){
-															this.timeBlock[index].style.display = 'none';
+															this.timeBlock[item.index].style.display = 'none';
 														}
 													}}
 													style={{
@@ -602,14 +618,14 @@ class TimeShow extends Component{
 												>
 														<div
 															className = "timeShow-item-block timeShow-item-block-select"
-															ref={(ref)=>this.timeBlock[index]=ref}
+															ref={(ref)=>this.timeBlock[item.index]=ref}
 															style={{
 																display: 'none',
 															}}
 														>
 															<div
 																className = "timeShow-tip"
-																ref={(ref)=>this.timeTip[index]=ref}
+																ref={(ref)=>this.timeTip[item.index]=ref}
 															/>
 														</div>
 												</div>
