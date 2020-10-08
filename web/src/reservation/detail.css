@@ -1,7 +1,7 @@
 .timeShow{
 	display: flex;
 	padding: 0px;
-	max-width: 800px;
+	max-width: 1000px;
 	border: 1px solid #666666;
 	/*border-radius: 10px;*/
 }
@@ -11,7 +11,7 @@
 	border-width: 0 1px 0 1px;
 }
 .timeShow-index{
-	width: 60px;
+	width: 100px;
 	border-style: solid;
 	border-width: 0 1px 0 1px;
 }
@@ -21,6 +21,10 @@
 	text-align: center;
 	border-style: solid;
 	border-width: 0 0 2px 0;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
 }
 
 
@@ -36,6 +40,10 @@
 	align-items: center;
 	justify-content: center;
 	width: 100%;
+	-webkit-user-select:none;
+	-moz-user-select:none;
+	-ms-user-select:none;
+	user-select:none;
 }
 .timeShow-item-block{
 	position: absolute;
@@ -43,10 +51,38 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+	line-height: 20px;
 }
 .timeShow-item-block-available{
 	background-color: #FFF;
 }
 .timeShow-item-block-used{
 	background-color: #008B8B;
+}
+.timeShow-item-block-select{
+	background-color: rgba(0, 0, 0, 0.75);
+}
+.timeShow-tip{
+	position: absolute;
+	width: 100px;
+	background-color: rgba(64, 64, 64, 1);
+	box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px 0px;
+	border-radius: 5px;
+	font-size: 15px;
+	height: 20px;
+	color: white;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+.timeShow-used-inside{
+	position: static;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
 }

@@ -49,12 +49,13 @@ def getData(request):
 	# 用start_time, end_time与project对象得到availableTime列表
 	avaiTimeList = RsrvTimeAvailable.objects.filter(project = project, startTime__gte = startTime, endTime__lte = endTime)
 	# 用available列表得到相应的UsedTime列表
-	result = { 'available': [], 'used': [] }
+	result = []
 	for avaiTime in avaiTimeList:
-		result['available'].append(tools.avaiTimeToDict(avaiTime))
+		item = {'available' : tools.avaiTimeToDict(avaiTime), 'used' : []}
 		usedTimeList = RsrvTimeUsed.objects.filter(availableTime = avaiTime)
 		for usedTime in usedTimeList:
-			result['used'].append(tools.usedTimeToDict(usedTime))
+			item['used'].append(tools.usedTimeToDict(usedTime))
+		result.append(item)
 	# 封装并回传
 	return HttpResponse(json.dumps(result), content_type = 'application/json')
 
@@ -78,8 +79,16 @@ def apply(request):
 	try:
 		startTime = tools.timestamp2datetime(int(request.POST.get('startTime')))
 		endTime = tools.timestamp2datetime(int(request.POST.get('endTime')))
+		assert startTime < endTime;
 	except:
 		return HttpResponse("Wrong start time or end time.", status = 400)
+	
+	#检查是否为过去时间
+	if (startTime < datetime.datetime.now()):
+		return HttpResponse("Can't reserve a past time.", status = 400)
+	#检查是否在开放时间内
+	if (startTime < avaiTime.startTime or endTime > avaiTime.endTime):
+		return HttpResponse("The time is not available.")
 	
 	# 检查是否有未使用的申请时间
 	if (project.contest):
@@ -117,7 +126,7 @@ def cancel(request):
 	
 	# 用id找到该已预约时间对象
 	try:
-		usedTime = RsrvTimeUsed.objects.get(id = int(request.POST.get('usedTimeID')))
+		usedTime = RsrvTimeUsed.objects.get(id = int(request.POST.get('id')))
 	except:
 		return HttpResponse("Reserved time not found.", status = 400)
 	

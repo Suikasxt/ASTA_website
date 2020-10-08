@@ -66,7 +66,6 @@ class App extends React.Component {
 			async: true,
 			success: function (result) {
 				if (result.id !== undefined && result !== this.state.user){
-					console.log(result);
 					this.setState({user: result});
 				}
 			}.bind(this),

@@ -14,15 +14,22 @@ const { Column } = Table;
 const TeamCreateForm = Form.create({ name: 'form_in_modal' })(
 	class extends React.Component {
 		render() {
-			const { visible, onCancel, onCreate, form } = this.props;
+			const { visible, onCancel, onCreate, form, confirmLoading } = this.props;
 			const { getFieldDecorator } = form;
 			return (
 				<Modal
 					visible={visible}
 					title="Create a new team"
-					okText={this.props.name ? "Update" : "Create"}
 					onCancel={onCancel}
 					onOk={onCreate}
+					footer={[
+						<Button key="back" onClick={onCancel}>
+							Cancel
+						</Button>,
+						<Button key="submit" type="primary" loading={confirmLoading} onClick={onCreate}>
+							{this.props.name ? "Update" : "Create"}
+						</Button>,
+					]}
 				>
 					<Form layout="vertical">
 						<Form.Item label="Tean name">
