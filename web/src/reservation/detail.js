@@ -182,8 +182,21 @@ class TimeShow extends Component{
 	dataSet = (data) => {
 		let available = new Array();
 		let used = new Array();
+		let oneDayTime = getOneDayTime();
+		let offset = new Date().getTimezoneOffset()*(oneDayTime/24/60);
+		let minTime = this.state.endTime;
+		let maxTime = this.state.startTime;
+		let full = false;
 		for (let i = 0; i < data.length; i++){
-			data[i].used.sort((a, b)=>{return a.startTime - b.startTime;});
+			data[i].used.sort((a, b)=>{return a.startTime - b.startTime});
+			if (parseInt((data[i].available.startTime - offset)/oneDayTime) != parseInt((data[i].available.endTime - offset)/oneDayTime)){
+				full = true;
+			}
+			let stClock = (data[i].available.startTime - offset)%oneDayTime;
+			let etClock = (data[i].available.endTime - offset)%oneDayTime;
+			if (stClock < minTime.getTime()) minTime = new Date(stClock);
+			if (etClock > maxTime.getTime()) maxTime = new Date(etClock);
+			
 			let last = data[i].available.startTime;
 			for (let j = 0; j < data[i].used.length; j++){
 				used.push(data[i].used[j]);
@@ -197,6 +210,9 @@ class TimeShow extends Component{
 			}
 		}
 		this.setState({data, available, used});
+		if (minTime < maxTime && full == false){
+			this.setState({startTime: minTime, endTime: maxTime});
+		}
 	}
 	getInfo = (id = this.props.id, startDate = this.state.startDate, endDate = this.state.endDate) => {
 		let url = global.constants.server + 'reservation/data/'
@@ -409,18 +425,30 @@ class TimeShow extends Component{
 						this.timeBlock[this.currentIndex].style.top = ((percent - this.state.startTime.getTime() / oneDayTime) / ((this.state.endTime - this.state.startTime) / oneDayTime) * this.timelineHeight - this.timeAvai[this.currentIndex].offsetTop) + 'px';
 						this.timeTip[this.currentIndex].innerHTML = getTimeString(timeNow, true, true, true, this.timeSpaceNumber>24*60);
 						*/
-						this.showForm(
-							getDateString(this.dateNowRecord), getTimeString(min(this.timeStartRecord, this.timeEndRecord), true),
-							getDateString(this.dateNowRecord), getTimeString(max(this.timeStartRecord, this.timeEndRecord), true));
+						if (this.timeStartRecord.getTime() == this.timeEndRecord.getTime()){
+							this.showForm(
+								getDateString(this.dateNowRecord), getTimeString(this.currentAvaiItem.st, true),
+								getDateString(this.dateNowRecord), getTimeString(this.currentAvaiItem.et, true));
+						}else{
+							this.showForm(
+								getDateString(this.dateNowRecord), getTimeString(min(this.timeStartRecord, this.timeEndRecord), true),
+								getDateString(this.dateNowRecord), getTimeString(max(this.timeStartRecord, this.timeEndRecord), true));
+						}
 					}
 					this.moveState = 0;
 				}}
 				onPointerLeave={(e) => {
 					if (this.moveState == 2){
 						this.timeBlock[this.currentIndex].style.display = 'none';
-						this.showForm(
-							getDateString(this.dateNowRecord), getTimeString(min(this.timeStartRecord, this.timeEndRecord), true),
-							getDateString(this.dateNowRecord), getTimeString(max(this.timeStartRecord, this.timeEndRecord), true));
+						if (this.timeStartRecord.getTime() == this.timeEndRecord.getTime()){
+							this.showForm(
+								getDateString(this.dateNowRecord), getTimeString(this.currentAvaiItem.st, true),
+								getDateString(this.dateNowRecord), getTimeString(this.currentAvaiItem.et, true));
+						}else{
+							this.showForm(
+								getDateString(this.dateNowRecord), getTimeString(min(this.timeStartRecord, this.timeEndRecord), true),
+								getDateString(this.dateNowRecord), getTimeString(max(this.timeStartRecord, this.timeEndRecord), true));
+						}
 					}
 					this.moveState = 0;
 				}}
@@ -451,6 +479,7 @@ class TimeShow extends Component{
 							startPercent = endPercent;
 							endPercent = tmp;
 						}
+						this.timeBlock[this.currentIndex].style.display = 'flex';
 						this.timeBlock[this.currentIndex].style.top = ((startPercent - this.state.startTime.getTime() / oneDayTime) / ((this.state.endTime - this.state.startTime) / oneDayTime) * this.timelineHeight - this.timeAvai[this.currentIndex].offsetTop) + 'px';
 						this.timeBlock[this.currentIndex].style.height = ((endPercent - startPercent) / ((this.state.endTime - this.state.startTime) / oneDayTime) * this.timelineHeight) + 'px';
 						
@@ -637,6 +666,7 @@ class TimeShow extends Component{
 						)
 					})}
 				</div>
+				<br/>
 				<Button type="primary" onClick={()=>this.showForm()}>
 					Edit Reservation
 				</Button>

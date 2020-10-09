@@ -84,7 +84,7 @@ def apply(request):
 		return HttpResponse("Wrong start time or end time.", status = 400)
 	
 	#检查是否为过去时间
-	if (startTime < datetime.datetime.now()):
+	if (startTime.date() <= datetime.datetime.now().date()):
 		return HttpResponse("Can't reserve a past time.", status = 400)
 	#检查是否在开放时间内
 	if (startTime < avaiTime.startTime or endTime > avaiTime.endTime):
