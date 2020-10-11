@@ -263,23 +263,13 @@ class TimeShow extends Component{
 		}
 	}
 	handleScroll = (e) => {
+		e.preventDefault();
 		let pos = (e.pageY - this.timeline[0].offsetTop) / this.timelineHeight;
 		let { startTime, endTime }= this.state;
 		let mid = startTime.getTime() * (1-pos) + endTime.getTime() * pos;
-		let rate = 0.8, st, et;
-		if (e.deltaY <= 0) {
-			/* scrolling up */
-			e.preventDefault();
-			st = mid - (mid - startTime.getTime()) * rate;
-			et = mid - (mid - endTime.getTime()) * rate;
-		}
-		else
-		{
-			/* scrolling down */
-			e.preventDefault();
-			st = mid - (mid - startTime.getTime()) / rate;
-			et = mid - (mid - endTime.getTime()) / rate;
-		}
+		let rate = Math.pow(1.0017, e.deltaY), st, et;
+		st = mid - (mid - startTime.getTime()) * rate;
+		et = mid - (mid - endTime.getTime()) * rate;
 		this.changeTimeStage(st, et);
 	}
 	getTimeTip = (e, item = null) => {
@@ -515,16 +505,23 @@ class TimeShow extends Component{
 						<TimePicker value={moment(this.state.endTimePick, "HH:mm:ss")} onChange={this.endTimeChange}/>
 					</div>
 				</Modal>
+				{/* 预约表格容器 */}
 				<div className = "timeShow">
+					{/* 这个div是最左边时刻表这一列 */}
 					<div className = "timeShow-index">
+					
+						{/* 放一个空的title占位 */}
 						<div className = "timeShow-title">
 						</div>
+						
+						{/* timeline是核心的长条 */}
 						<div
 							className = "timeShow-timeline"
 							style={{height: this.timelineHeight}}
 							onPointerDown={(e) => {this.moveState = 1; this.moveRecord = {X:e.pageX, Y:e.pageY};}}
 						>
 						{
+							//用map遍历每个时刻标签，计算它到顶部应有的距离
 							staticTimeline.map((item, index) =>{
 								let lastOne = index == staticTimeline.length-1;
 								return(
@@ -540,9 +537,12 @@ class TimeShow extends Component{
 						</div>
 					</div>
 					
+					{/* timedata里面是一共7天 */}
 					{timeData.map((dayItem, dayIndex) => {
+						/* 每一天是一个timeShow-item，跟前面timeShow-index平级 */
 						return(
 							<div className = "timeShow-item" key = {dayIndex}>
+								{/* 表头写日期和星期 */}
 								<div className = "timeShow-title">
 									<div>
 										{ dayItem.date }
@@ -551,6 +551,7 @@ class TimeShow extends Component{
 										{ dayItem.week }
 									</div>
 								</div>
+								{/* 每一天的时间长条 */}
 								<div 
 									className = "timeShow-timeline"
 									ref={(ref)=>this.timeline[dayIndex]=ref}
@@ -561,8 +562,8 @@ class TimeShow extends Component{
 											this.moveRecord = {X:e.pageX, Y:e.pageY};
 										}
 									}}
-									//onWheel={(e) => this.handleScroll(e)}
 								>
+									{/* 往timeline里面塞已经被预约的时间，计算出它应有的长度和到顶部的距离 */}
 									{dayItem.used.map((item, index) =>{
 										let top = (time2percent4UTCDay(item.st) - startPercent) / lengthPercent * this.timelineHeight;
 										let height = (time2percent4UTCDay(item.et)-time2percent4UTCDay(item.st)) / lengthPercent *this.timelineHeight;
@@ -604,6 +605,7 @@ class TimeShow extends Component{
 											)
 										}
 									})}
+									{/* 往timeline里面塞开放的时间，Tooltip只是用来鼠标放上去的时候弹出一个提示显示这开放时间从几点到几点 */}
 									{dayItem.available.map((item, index) =>{
 										
 										let top = (time2percent4UTCDay(item.st) - startPercent) / lengthPercent * this.timelineHeight;
@@ -611,6 +613,7 @@ class TimeShow extends Component{
 										
 										return(
 											<Tooltip title={item.title} key = {index} placement="right">
+												{/* 开放时间的核心div，onPointerXXXX的都是表示鼠标事件，鼠标按下了干啥，移动了干啥之类的*/}
 												<div 
 													className = "timeShow-item-block timeShow-item-block-available"
 													onPointerDown={(e)=>{
@@ -645,18 +648,19 @@ class TimeShow extends Component{
 														height: height,
 													}}
 												>
+													{/* 这个select是用来选中时间的，鼠标没按下的时候也用来跟随鼠标显示日期提示*/}
+													<div
+														className = "timeShow-item-block timeShow-item-block-select"
+														ref={(ref)=>this.timeBlock[item.index]=ref}
+														style={{
+															display: 'none',
+														}}
+													>
 														<div
-															className = "timeShow-item-block timeShow-item-block-select"
-															ref={(ref)=>this.timeBlock[item.index]=ref}
-															style={{
-																display: 'none',
-															}}
-														>
-															<div
-																className = "timeShow-tip"
-																ref={(ref)=>this.timeTip[item.index]=ref}
-															/>
-														</div>
+															className = "timeShow-tip"
+															ref={(ref)=>this.timeTip[item.index]=ref}
+														/>
+													</div>
 												</div>
 											</Tooltip>
 										)
